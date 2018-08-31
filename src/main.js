@@ -30,6 +30,11 @@ let _mesh;
 
 let _selectionSpheres = [];
 
+function clamp(min, max, x)
+{
+	return Math.min(Math.max(x, min), max);
+}
+
 function quickMaterial(r, g, b)
 {
 	let a;
