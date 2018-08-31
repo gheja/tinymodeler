@@ -16,8 +16,11 @@ let _boxes;
 let _shadowGenerator;
 let _light;
 
+let _boundingBoxSize;
+
 let _points;
 let _currentPoint;
+let _hoveredPoint;
 let _currentPointA;
 
 let _faces;
@@ -182,7 +185,17 @@ function onWheel(event)
 //	event.target.value = Math.floor((event.target.value * 1 + change) * 100) / 100;
 	event.target.value = clamp(0, 100, Math.round(event.target.value * 1) + change);
 	
-	updateCurrentPoint();
+	updateModel();
+}
+
+function onChange(event)
+{
+	updateModel();
+}
+
+function updateBoundingBox()
+{
+	_boundingBoxSize = document.getElementById("bounding_box_edit").value * 1;
 }
 
 function updateMesh()
@@ -199,9 +212,9 @@ function updateMesh()
 	
 	for (i=0; i<_points.length; i++)
 	{
-		positions.push(_points[i].x * 1);
-		positions.push(_points[i].y * 1);
-		positions.push(_points[i].z * 1);
+		positions.push(_points[i].x * 1 * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2);
+		positions.push(_points[i].y * 1 * _boundingBoxSize / 10);
+		positions.push(_points[i].z * 1 * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2);
 	}
 	
 	for (i=0; i<_faces.length; i++)
@@ -225,6 +238,52 @@ function updateMesh()
 	vertexData.applyToMesh(_mesh);
 	
 	localstorageSave();
+}
+
+function updateSelectionPoints()
+{
+	moveSelectionSphere(0, null);
+	moveSelectionSphere(1, null);
+	moveSelectionSphere(2, null);
+	moveSelectionSphere(3, null);
+	moveSelectionSphere(4, null);
+	
+	if (_hoveredPoint !== null)
+	{
+		moveSelectionSphere(0, _hoveredPoint);
+	}
+	
+	if (_currentFace)
+	{
+		if (_currentFace.p1 !== null)
+		{
+			moveSelectionSphere(1, _points[_currentFace.p1]);
+			// TODO: highlight point selector
+		}
+		
+		if (_currentFace.p2 !== null)
+		{
+			moveSelectionSphere(2, _points[_currentFace.p2]);
+		}
+		
+		if (_currentFace.p3 !== null)
+		{
+			moveSelectionSphere(3, _points[_currentFace.p3]);
+		}
+		
+		if (_currentFace.p4 !== null)
+		{
+			moveSelectionSphere(4, _points[_currentFace.p4]);
+		}
+	}
+}
+
+function updateModel()
+{
+	updateBoundingBox();
+	updateCurrentPoint();
+	updateSelectionPoints();
+	updateMesh();
 }
 
 function updateSidebar()
@@ -268,6 +327,8 @@ function updateSidebar()
 	
 	s = "";
 	
+	s += _boundingBoxSize + "/";
+	
 	for (i=0; i<_points.length; i++)
 	{
 		s += _points[i].x + " " + _points[i].y + " " + _points[i].z + " ";
@@ -297,6 +358,8 @@ function unselectPoint()
 	document.getElementById("point_edit_x").value = "-";
 	document.getElementById("point_edit_y").value = "-";
 	document.getElementById("point_edit_z").value = "-";
+	
+	updateSelectionPoints();
 }
 
 function unselectFace()
@@ -309,10 +372,7 @@ function unselectFace()
 	_currentFaceA = null;
 	_currentFace = null;
 	
-	moveSelectionSphere(1, {}, false);
-	moveSelectionSphere(2, {}, false);
-	moveSelectionSphere(3, {}, false);
-	moveSelectionSphere(4, {}, false);
+	updateSelectionPoints();
 }
 
 function unselectAll()
@@ -375,7 +435,8 @@ function selectPoint(event)
 		_currentFace.p4 = obj.dataset.pointId;
 		selectCurrentFacePoints();
 		updateCurrentFace();
-		updateMesh();
+		updateModel();
+		updateSidebar();
 		_faceRedefinitionStep = 0;
 		setStatus("Done.");
 		return;
@@ -393,16 +454,18 @@ function selectPoint(event)
 	document.getElementById("point_edit_z").value = _currentPoint.z;
 	
 	setStatus("Point selected for edit.");
+	
+	updateSelectionPoints();
 }
 
-function moveSelectionSphere(i, point, active)
+function moveSelectionSphere(i, point)
 {
-	if (active)
+	if (point)
 	{
 		_selectionSpheres[i].setEnabled(true);
-		_selectionSpheres[i].position.x = point.x;
-		_selectionSpheres[i].position.y = point.y;
-		_selectionSpheres[i].position.z = point.z;
+		_selectionSpheres[i].position.x = point.x * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2;
+		_selectionSpheres[i].position.y = point.y * _boundingBoxSize / 10;
+		_selectionSpheres[i].position.z = point.z * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2;
 	}
 	else
 	{
@@ -412,16 +475,15 @@ function moveSelectionSphere(i, point, active)
 
 function highlightPoint(event)
 {
-	let obj, a;
 	
-	obj = event.target;
-	
-	moveSelectionSphere(0, _points[obj.dataset.pointId], true);
+	_hoveredPoint = _points[event.target.dataset.pointId];
+	updateSelectionPoints();
 }
 
 function unhighlightPoint(event)
 {
-	moveSelectionSphere(0, {}, false);
+	_hoveredPoint = null;
+	updateSelectionPoints();
 }
 
 function addPoint()
@@ -448,27 +510,7 @@ function selectFace(event)
 	_currentFaceA.className = "selected";
 	
 	selectCurrentFacePoints();
-	
-	if (_currentFace.p1 !== null)
-	{
-		moveSelectionSphere(1, _points[_currentFace.p1], true);
-		// TODO: highlight point selector
-	}
-	
-	if (_currentFace.p2 !== null)
-	{
-		moveSelectionSphere(2, _points[_currentFace.p2], true);
-	}
-	
-	if (_currentFace.p3 !== null)
-	{
-		moveSelectionSphere(3, _points[_currentFace.p3], true);
-	}
-	
-	if (_currentFace.p4 !== null)
-	{
-		moveSelectionSphere(4, _points[_currentFace.p4], true);
-	}
+	updateSelectionPoints();
 }
 
 function redefineFace()
@@ -517,8 +559,8 @@ function resetView()
 
 function registerInputEvents(obj)
 {
-	obj.addEventListener("change", updateCurrentPoint);
-	obj.addEventListener("keyup", updateCurrentPoint);
+	obj.addEventListener("change", onChange);
+	obj.addEventListener("keyup", onChange);
 	obj.addEventListener("wheel", onWheel);
 }
 
@@ -526,6 +568,7 @@ function init()
 {
 	engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 	scene = createScene();
+	_boundingBoxSize = 10;
 	_points = [];
 	_faces = [];
 	
