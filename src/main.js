@@ -180,7 +180,7 @@ function onWheel(event)
 	}
 	
 //	event.target.value = Math.floor((event.target.value * 1 + change) * 100) / 100;
-	event.target.value = Math.round(event.target.value * 1) + change;
+	event.target.value = clamp(0, 100, Math.round(event.target.value * 1) + change);
 	
 	updateCurrentPoint();
 }
