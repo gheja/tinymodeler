@@ -515,6 +515,13 @@ function resetView()
 	scene.activeCamera.beta = Math.PI / 2 * 0.7;
 }
 
+function registerInputEvents(obj)
+{
+	obj.addEventListener("change", updateCurrentPoint);
+	obj.addEventListener("keyup", updateCurrentPoint);
+	obj.addEventListener("wheel", onWheel);
+}
+
 function init()
 {
 	engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
@@ -522,17 +529,10 @@ function init()
 	_points = [];
 	_faces = [];
 	
-	document.getElementById("point_edit_x").addEventListener("change", updateCurrentPoint);
-	document.getElementById("point_edit_x").addEventListener("keyup", updateCurrentPoint);
-	document.getElementById("point_edit_x").addEventListener("wheel", onWheel);
-	
-	document.getElementById("point_edit_y").addEventListener("change", updateCurrentPoint);
-	document.getElementById("point_edit_y").addEventListener("keyup", updateCurrentPoint);
-	document.getElementById("point_edit_y").addEventListener("wheel", onWheel);
-	
-	document.getElementById("point_edit_z").addEventListener("change", updateCurrentPoint);
-	document.getElementById("point_edit_z").addEventListener("keyup", updateCurrentPoint);
-	document.getElementById("point_edit_z").addEventListener("wheel", onWheel);
+	registerInputEvents(document.getElementById("point_edit_x"));
+	registerInputEvents(document.getElementById("point_edit_y"));
+	registerInputEvents(document.getElementById("point_edit_z"));
+	registerInputEvents(document.getElementById("bounding_box_edit"));
 	
 	engine.runRenderLoop(onRenderLoop);
 	window.addEventListener("resize", onResize);
