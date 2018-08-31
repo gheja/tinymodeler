@@ -98,13 +98,16 @@ function createScene()
 	_selectionSpheres[0].material = quickMaterial(1.0, 0.5, 0.0);
 	
 	_selectionSpheres[1] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[1].material = quickMaterial(1.0, 0.1, 0.0);
+	_selectionSpheres[1].material = quickMaterial(1.0, 0.0, 0.0);
 	
 	_selectionSpheres[2] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[2].material = quickMaterial(0.0, 1.0, 0.1);
+	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5);
 	
 	_selectionSpheres[3] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[3].material = quickMaterial(0.0, 0.5, 1.0);
+	_selectionSpheres[3].material = quickMaterial(0.6, 0.0, 1.0);
+	
+	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
+	_selectionSpheres[4].material = quickMaterial(0.0, 0.5, 1.0);
 	
 	return scene;
 	
@@ -206,6 +209,10 @@ function updateMesh()
 		indices.push(_faces[i].p1 * 1);
 		indices.push(_faces[i].p2 * 1);
 		indices.push(_faces[i].p3 * 1);
+		
+		indices.push(_faces[i].p3 * 1);
+		indices.push(_faces[i].p4 * 1);
+		indices.push(_faces[i].p1 * 1);
 	}
 	
 	BABYLON.VertexData.ComputeNormals(positions, indices, normals);
@@ -270,7 +277,7 @@ function updateSidebar()
 	
 	for (i=0; i<_faces.length; i++)
 	{
-		s += _faces[i].p1 + " " + _faces[i].p2 + " " + _faces[i].p3 + " ";
+		s += _faces[i].p1 + " " + _faces[i].p2 + " " + _faces[i].p3 + " "+ _faces[i].p4 + " ";
 	}
 	
 	obj = document.getElementById("data");
@@ -305,6 +312,7 @@ function unselectFace()
 	moveSelectionSphere(1, {}, false);
 	moveSelectionSphere(2, {}, false);
 	moveSelectionSphere(3, {}, false);
+	moveSelectionSphere(4, {}, false);
 }
 
 function unselectAll()
@@ -357,6 +365,14 @@ function selectPoint(event)
 	else if (_faceRedefinitionStep == 3)
 	{
 		_currentFace.p3 = obj.dataset.pointId;
+		selectCurrentFacePoints();
+		_faceRedefinitionStep = 4;
+		setStatus("Select fourth point.");
+		return;
+	}
+	else if (_faceRedefinitionStep == 4)
+	{
+		_currentFace.p4 = obj.dataset.pointId;
 		selectCurrentFacePoints();
 		updateCurrentFace();
 		updateMesh();
@@ -448,6 +464,11 @@ function selectFace(event)
 	{
 		moveSelectionSphere(3, _points[_currentFace.p3], true);
 	}
+	
+	if (_currentFace.p4 !== null)
+	{
+		moveSelectionSphere(4, _points[_currentFace.p4], true);
+	}
 }
 
 function redefineFace()
@@ -466,7 +487,7 @@ function redefineFaceCancel()
 
 function addFace()
 {
-	_faces.push({ p1: null, p2: null, p3: null });
+	_faces.push({ p1: null, p2: null, p3: null, p4: null });
 	updateSidebar();
 	
 	// select last element
