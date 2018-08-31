@@ -1,2 +1,2 @@
 # tinymodeler
-A basic 3d modeler in javascript using Babylon.JS
+A basic 3d modeler for low poly models in javascript using BabylonJS
