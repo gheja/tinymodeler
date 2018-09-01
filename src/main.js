@@ -167,7 +167,14 @@ function localstorageSave()
 
 function localstorageLoad()
 {
-	_model = JSON.parse(localStorage.getItem("editor:model")) || {};
+	_model = JSON.parse(localStorage.getItem("editor:model")) || null;
+	
+	if (_model == null)
+	{
+		_model = {};
+		
+		clearModel();
+	}
 	
 	setDefaults(_model, _modelDefaults);
 }
@@ -739,6 +746,14 @@ function loadModelFromTextarea()
 function clearModel()
 {
 	_model = _copy(_modelDefaults);
+	
+	_model.points.push({ x: 0, y: 0, z: 0 });
+	_model.points.push({ x: 10, y: 0, z: 0 });
+	_model.points.push({ x: 10, y: 10, z: 0 });
+	_model.points.push({ x: 0, y: 10, z: 0 });
+	
+	_model.faces.push({ p1: 0, p2: 1, p3: 2, p4: 3 });
+	
 	updateModel();
 }
 
