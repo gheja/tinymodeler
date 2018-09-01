@@ -1,5 +1,5 @@
 TODO
-  * add face groups
+  [ ] add face groups
     * from face
     * to face
     * color (r, g, b, a)
@@ -8,5 +8,6 @@ TODO
     * [translation (x, y, z)]
     * [rotation (x, y, z)]
     * ...
-  * display a fixed size object for scale
-  * fix clear model exception
+  [ ] display a fixed size object for scale
+  [x] fix clear model exception
+  [ ] add center marker (x, y, z)
