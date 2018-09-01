@@ -110,19 +110,19 @@ a:hover
 
 #points a.selected_p2
 {
-	background: #e06;
+	background: #f0c;
 	color: #000;
 }
 
 #points a.selected_p3
 {
-	background: #60e;
+	background: #84f;
 	color: #000;
 }
 
 #points a.selected_p4
 {
-	background: #00e;
+	background: #4af;
 	color: #000;
 }
 

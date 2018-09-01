@@ -287,12 +287,48 @@ function updateMesh()
 
 function updateSelectionPoints()
 {
+	let a, i;
+	
 	moveSelectionSphere(0, null);
 	moveSelectionSphere(1, null);
 	moveSelectionSphere(2, null);
 	moveSelectionSphere(3, null);
 	moveSelectionSphere(4, null);
 	moveSelectionSphere(5, null);
+	
+	a = document.getElementById("points").getElementsByTagName("a");
+	
+	for (i=0; i<a.length; i++)
+	{
+		a[i].className = "";
+		
+		if (_currentFace)
+		{
+			if (_currentFace.p1 == a[i].dataset.pointId)
+			{
+				a[i].className = "selected_p1";
+			}
+			else if (_currentFace.p2 == a[i].dataset.pointId)
+			{
+				a[i].className = "selected_p2";
+			}
+			else if (_currentFace.p3 == a[i].dataset.pointId)
+			{
+				a[i].className = "selected_p3";
+			}
+			else if (_currentFace.p4 == a[i].dataset.pointId)
+			{
+				a[i].className = "selected_p4";
+			}
+		}
+	}
+	
+	a = document.getElementById("faces").getElementsByTagName("a");
+	
+	for (i=0; i<a; i++)
+	{
+		a[i].className = "";
+	}
 	
 	if (_hoveredPoint !== null)
 	{
@@ -302,6 +338,7 @@ function updateSelectionPoints()
 	if (_currentPoint)
 	{
 		moveSelectionSphere(5, _currentPoint);
+		_currentPointA.className = "selected";
 	}
 	
 	if (_currentFace)
@@ -326,6 +363,8 @@ function updateSelectionPoints()
 		{
 			moveSelectionSphere(4, _model.points[_currentFace.p4]);
 		}
+		
+		_currentFaceA.className = "selected";
 	}
 }
 
@@ -559,7 +598,6 @@ function selectPoint(event)
 	_currentPoint = _model.points[obj.dataset.pointId];
 	
 	_currentPointA = obj;
-	_currentPointA.className = "selected";
 	
 	document.getElementById("point_edit_x").value = _currentPoint.x;
 	document.getElementById("point_edit_y").value = _currentPoint.y;
@@ -577,7 +615,6 @@ function selectPointByIndex(index)
 	_currentPoint = _model.points[index];
 	
 	_currentPointA = document.getElementById("point-" + index);
-	_currentPointA.className = "selected";
 	
 	document.getElementById("point_edit_x").value = _currentPoint.x;
 	document.getElementById("point_edit_y").value = _currentPoint.y;
@@ -644,7 +681,6 @@ function selectFace(event)
 	_currentFace = _model.faces[event.target.dataset.pointId];
 	
 	_currentFaceA = event.target;
-	_currentFaceA.className = "selected";
 	
 	selectCurrentFacePoints();
 	updateSelectionPoints();
@@ -657,7 +693,6 @@ function selectFaceByIndex(index)
 	_currentFace = _model.faces[index];
 	
 	_currentFaceA = document.getElementById("face-" + index);
-	_currentFaceA.className = "selected";
 	
 	selectCurrentFacePoints();
 	updateSelectionPoints();
