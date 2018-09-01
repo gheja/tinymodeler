@@ -17,6 +17,7 @@ let _shadowGenerator;
 let _light;
 
 let _boundingBoxSize;
+let _flatShading;
 
 let _points;
 let _currentPoint;
@@ -236,6 +237,11 @@ function updateMesh()
 	vertexData.normals = normals;
 	
 	vertexData.applyToMesh(_mesh);
+	
+	if (_flatShading)
+	{
+		_mesh.convertToFlatShadedMesh();
+	}
 	
 	localstorageSave();
 }
@@ -549,6 +555,13 @@ function setStatus(s)
 function toggleWireframe()
 {
 	_mesh.material.wireframe = !_mesh.material.wireframe;
+}
+
+function toggleShading()
+{
+	_flatShading = !_flatShading;
+	
+	updateMesh();
 }
 
 function resetView()
