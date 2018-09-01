@@ -108,3 +108,13 @@ a.selected_c
 	background: #28f;
 	color: #014;
 }
+
+#data
+{
+	background: #222;
+	border: 1px solid #111;
+	color: #ccc;
+	width: 182px;
+	height: 100px;
+	font-size: 7pt;
+}

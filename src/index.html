@@ -40,7 +40,10 @@
 			
 			<div class="box">
 				<div class="head">Data</div>
-				<div id="data"></div>
+				<textarea id="data"></textarea>
+				<div id="data_size">-</div>
+				<a href="#" onclick="loadModelFromTextarea(); return false;">load</a>
+				<a href="#" onclick="clearModel(); return false;">clear</a>
 			</div>
 			
 			<a href="#" onclick="toggleWireframe(); return false;">wireframe</a>

@@ -449,9 +449,8 @@ function updateSidebar()
 	
 	s = getFinalModelData();
 	
-	obj = document.getElementById("data");
-	
-	obj.innerHTML = s + "<br/>" + s.length + " characters";
+	obj = document.getElementById("data").value = s;
+	obj = document.getElementById("data_size").innerHTML = s.length + " characters";
 }
 
 function unselectPoint()
@@ -724,6 +723,23 @@ function resetView()
 {
 	scene.activeCamera.alpha = -Math.PI / 2;
 	scene.activeCamera.beta = Math.PI / 2 * 0.7;
+}
+
+function loadModelFromTextarea()
+{
+	unselectAll();
+	
+	_finalModel = parseFinalModelData(document.getElementById("data").value);
+	convertFinalModelToEditable();
+	
+	updateSidebar();
+	updateModel();
+}
+
+function clearModel()
+{
+	_model = _copy(_modelDefaults);
+	updateModel();
 }
 
 function registerInputEvents(obj)
