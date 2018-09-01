@@ -16,15 +16,12 @@ let _boxes;
 let _shadowGenerator;
 let _light;
 
-let _scale;
 let _flatShading;
 
-let _points;
 let _currentPoint;
 let _hoveredPoint;
 let _currentPointA;
 
-let _faces;
 let _currentFace;
 let _currentFaceA;
 
@@ -33,6 +30,13 @@ let _faceRedefinitionStep = 0;
 let _mesh;
 
 let _selectionSpheres = [];
+
+let _model = {
+	scale: 1.0,
+	points: [],
+	faces: [],
+	flatShaded: false
+};
 
 function clamp(min, max, x)
 {
@@ -147,14 +151,20 @@ function createScene()
 
 function localstorageSave()
 {
-	localStorage.setItem("editor:points", JSON.stringify(_points));
-	localStorage.setItem("editor:faces", JSON.stringify(_faces));
+	localStorage.setItem("editor:model", JSON.stringify(_model));
 }
 
 function localstorageLoad()
 {
-	_points = JSON.parse(localStorage.getItem("editor:points")) || [];
-	_faces = JSON.parse(localStorage.getItem("editor:faces")) || [];
+
+	_model = JSON.parse(localStorage.getItem("editor:model")) || {};
+	
+	setDefaults(_model, {
+		scale: 10,
+		points: [],
+		faces: [],
+		flatShaded: false
+	});
 }
 
 function onRenderLoop()
@@ -220,7 +230,7 @@ function onChange(event)
 
 function updateScale()
 {
-	_scale = document.getElementById("scale_edit").value * 1;
+	_model.scale = document.getElementById("scale_edit").value * 1;
 }
 
 function updateMesh()
@@ -235,22 +245,22 @@ function updateMesh()
 	indices = [];
 	normals = [];
 	
-	for (i=0; i<_points.length; i++)
+	for (i=0; i<_model.points.length; i++)
 	{
-		positions.push(_points[i].x * 1 - 50);
-		positions.push(_points[i].y * 1);
-		positions.push(_points[i].z * 1 - 50);
+		positions.push(_model.points[i].x * 1 - 50);
+		positions.push(_model.points[i].y * 1);
+		positions.push(_model.points[i].z * 1 - 50);
 	}
 	
-	for (i=0; i<_faces.length; i++)
+	for (i=0; i<_model.faces.length; i++)
 	{
-		indices.push(_faces[i].p1 * 1);
-		indices.push(_faces[i].p2 * 1);
-		indices.push(_faces[i].p3 * 1);
+		indices.push(_model.faces[i].p1 * 1);
+		indices.push(_model.faces[i].p2 * 1);
+		indices.push(_model.faces[i].p3 * 1);
 		
-		indices.push(_faces[i].p3 * 1);
-		indices.push(_faces[i].p4 * 1);
-		indices.push(_faces[i].p1 * 1);
+		indices.push(_model.faces[i].p3 * 1);
+		indices.push(_model.faces[i].p4 * 1);
+		indices.push(_model.faces[i].p1 * 1);
 	}
 	
 	BABYLON.VertexData.ComputeNormals(positions, indices, normals);
@@ -287,23 +297,23 @@ function updateSelectionPoints()
 	{
 		if (_currentFace.p1 !== null)
 		{
-			moveSelectionSphere(1, _points[_currentFace.p1]);
+			moveSelectionSphere(1, _model.points[_currentFace.p1]);
 			// TODO: highlight point selector
 		}
 		
 		if (_currentFace.p2 !== null)
 		{
-			moveSelectionSphere(2, _points[_currentFace.p2]);
+			moveSelectionSphere(2, _model.points[_currentFace.p2]);
 		}
 		
 		if (_currentFace.p3 !== null)
 		{
-			moveSelectionSphere(3, _points[_currentFace.p3]);
+			moveSelectionSphere(3, _model.points[_currentFace.p3]);
 		}
 		
 		if (_currentFace.p4 !== null)
 		{
-			moveSelectionSphere(4, _points[_currentFace.p4]);
+			moveSelectionSphere(4, _model.points[_currentFace.p4]);
 		}
 	}
 }
@@ -324,7 +334,7 @@ function updateSidebar()
 	
 	obj.innerHTML = "";
 	
-	for (i=0; i<_points.length; i++)
+	for (i=0; i<_model.points.length; i++)
 	{
 		tmp = document.createElement("a");
 		tmp.dataset.pointId = i;
@@ -342,7 +352,7 @@ function updateSidebar()
 	
 	obj.innerHTML = "";
 	
-	for (i=0; i<_faces.length; i++)
+	for (i=0; i<_model.faces.length; i++)
 	{
 		tmp = document.createElement("a");
 		tmp.dataset.pointId = i;
@@ -357,18 +367,18 @@ function updateSidebar()
 	
 	s = "";
 	
-	s += _scale + "/";
+	s += _model.scale + "/";
 	
-	for (i=0; i<_points.length; i++)
+	for (i=0; i<_model.points.length; i++)
 	{
-		s += _points[i].x + " " + _points[i].y + " " + _points[i].z + " ";
+		s += _model.points[i].x + " " + _model.points[i].y + " " + _model.points[i].z + " ";
 	}
 	
 	s += "/";
 	
-	for (i=0; i<_faces.length; i++)
+	for (i=0; i<_model.faces.length; i++)
 	{
-		s += _faces[i].p1 + " " + _faces[i].p2 + " " + _faces[i].p3 + " "+ _faces[i].p4 + " ";
+		s += _model.faces[i].p1 + " " + _model.faces[i].p2 + " " + _model.faces[i].p3 + " "+ _model.faces[i].p4 + " ";
 	}
 	
 	obj = document.getElementById("data");
@@ -474,7 +484,7 @@ function selectPoint(event)
 	
 	unselectAll();
 	
-	_currentPoint = _points[obj.dataset.pointId];
+	_currentPoint = _model.points[obj.dataset.pointId];
 	
 	_currentPointA = obj;
 	_currentPointA.className = "selected";
@@ -492,7 +502,7 @@ function selectPointByIndex(index)
 {
 	unselectAll();
 	
-	_currentPoint = _points[index];
+	_currentPoint = _model.points[index];
 	
 	_currentPointA = document.getElementById("point-" + index);
 	_currentPointA.className = "selected";
@@ -524,7 +534,7 @@ function moveSelectionSphere(i, point)
 function highlightPoint(event)
 {
 	
-	_hoveredPoint = _points[event.target.dataset.pointId];
+	_hoveredPoint = _model.points[event.target.dataset.pointId];
 	updateSelectionPoints();
 }
 
@@ -538,17 +548,17 @@ function addPoint()
 {
 	if (_currentPoint)
 	{
-		_points.push({ x: _currentPoint.x, y: _currentPoint.y, z: _currentPoint.z });
+		_model.points.push({ x: _currentPoint.x, y: _currentPoint.y, z: _currentPoint.z });
 	}
 	else
 	{
-		_points.push({ x: 0, y: 0, z: 0 });
+		_model.points.push({ x: 0, y: 0, z: 0 });
 	}
 	
 	updateSidebar();
 	
 	// select last element
-	selectPointByIndex(_points.length - 1);
+	selectPointByIndex(_model.points.length - 1);
 }
 
 function updateCurrentFace()
@@ -559,7 +569,7 @@ function selectFace(event)
 {
 	unselectAll();
 	
-	_currentFace = _faces[event.target.dataset.pointId];
+	_currentFace = _model.faces[event.target.dataset.pointId];
 	
 	_currentFaceA = event.target;
 	_currentFaceA.className = "selected";
@@ -572,7 +582,7 @@ function selectFaceByIndex(index)
 {
 	unselectAll();
 	
-	_currentFace = _faces[index];
+	_currentFace = _model.faces[index];
 	
 	_currentFaceA = document.getElementById("face-" + index);
 	_currentFaceA.className = "selected";
@@ -597,11 +607,11 @@ function redefineFaceCancel()
 
 function addFace()
 {
-	_faces.push({ p1: null, p2: null, p3: null, p4: null });
+	_model.faces.push({ p1: null, p2: null, p3: null, p4: null });
 	updateSidebar();
 	
 	// select last element
-	selectFaceByIndex(_faces.length - 1);
+	selectFaceByIndex(_model.faces.length - 1);
 	redefineFace();
 }
 
@@ -661,9 +671,6 @@ function init()
 {
 	engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 	scene = createScene();
-	_scale = 10;
-	_points = [];
-	_faces = [];
 	
 	registerInputEvents(document.getElementById("point_edit_x"));
 	registerInputEvents(document.getElementById("point_edit_y"));
