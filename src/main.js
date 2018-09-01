@@ -271,6 +271,7 @@ function onMouseMove(event)
 	
 	if (!a.pickedMesh || a.pickedMesh.pointIndex === undefined)
 	{
+		unhighlightPoint();
 		return;
 	}
 	
