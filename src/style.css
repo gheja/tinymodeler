@@ -75,38 +75,66 @@ a:active,
 a:visited
 {
 	background: rgba(0,0,0,0.2);
-	color: #fff;
+	color: #4bf;
 	text-decoration: none;
 }
 
 a:hover
 {
 	background: #000;
-	color: #4bf;
+	color: #fff;
 }
 
-a.selected
+#points a
+{
+	color: #fff;
+}
+
+#points a:hover
+{
+	background: #fa0;
+	color: #000;
+}
+
+#points a.selected
 {
 	background: #0e0;
 	color: #000;
 }
 
-a.selected_a
+#points a.selected_p1
 {
 	background: #e00;
-	color: #400;
+	color: #000;
 }
 
-a.selected_b
+#points a.selected_p2
 {
-	background: #0e0;
-	color: #040;
+	background: #e06;
+	color: #000;
 }
 
-a.selected_c
+#points a.selected_p3
 {
-	background: #28f;
-	color: #014;
+	background: #60e;
+	color: #000;
+}
+
+#points a.selected_p4
+{
+	background: #00e;
+	color: #000;
+}
+
+#faces a
+{
+	color: #fff;
+}
+
+#faces a.selected
+{
+	background: #fff;
+	color: #000;
 }
 
 #data
@@ -122,4 +150,22 @@ a.selected_c
 #status
 {
 	font-weight: bold;
+	background: rgba(0,0,0,0);
+	
+	animation-duration: 0.5s;
+	animation-name: slidein;
+	animation-timing-function: ease-in-out;
+	animation-fill-mode: forwards;
+}
+
+@keyframes updated
+{
+	0%
+	{
+		background: rgba(0,0,0,0.5);
+	}
+	100%
+	{
+		background: rgba(0,0,0,0);
+	}
 }

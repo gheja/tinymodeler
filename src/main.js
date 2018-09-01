@@ -693,7 +693,13 @@ function deleteCurrentFace()
 
 function setStatus(s)
 {
-	document.getElementById("status").innerHTML = s;
+	let obj;
+	
+	obj = document.getElementById("status");
+	obj.style.animationName = "updated";
+	obj.addEventListener("webkitAnimationEnd", function(element) { element.target.style.animationName = ""; });
+	
+	obj.innerHTML = s;
 }
 
 function toggleWireframe()
