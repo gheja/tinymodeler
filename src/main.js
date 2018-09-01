@@ -514,7 +514,7 @@ function updateSidebar()
 		tmp.onclick = selectPoint;
 		tmp.onmouseover = highlightPoint;
 		tmp.onmouseout = unhighlightPoint;
-		tmp.innerHTML = i + 1;
+		tmp.innerHTML = i;
 		
 		obj.appendChild(tmp);
 	}
@@ -530,7 +530,7 @@ function updateSidebar()
 		tmp.href = "#";
 		tmp.id = "face-" + i;
 		tmp.onclick = selectFace;
-		tmp.innerHTML = i + 1;
+		tmp.innerHTML = i;
 		
 		obj.appendChild(tmp);
 	}
