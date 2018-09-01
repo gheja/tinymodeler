@@ -230,6 +230,7 @@ function onWheel(event)
 
 function onChange(event)
 {
+	updateCurrentPoint();
 	updateModel();
 }
 
@@ -498,8 +499,6 @@ function updateCurrentPoint()
 	_currentPoint.x = document.getElementById("point_edit_x").value * 1;
 	_currentPoint.y = document.getElementById("point_edit_y").value * 1;
 	_currentPoint.z = document.getElementById("point_edit_z").value * 1;
-	
-	updateModel();
 }
 
 function selectCurrentFacePoints()
