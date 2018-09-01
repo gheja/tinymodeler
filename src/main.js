@@ -597,11 +597,29 @@ function setStatus(s)
 function toggleWireframe()
 {
 	_mesh.material.wireframe = !_mesh.material.wireframe;
+	
+	if (_mesh.material.wireframe)
+	{
+		setStatus("Wireframe display. Ready.");
+	}
+	else
+	{
+		setStatus("Shaded display. Ready.");
+	}
 }
 
 function toggleShading()
 {
 	_flatShading = !_flatShading;
+	
+	if (_flatShading)
+	{
+		setStatus("Flat shading. Ready.");
+	}
+	else
+	{
+		setStatus("Auto shading. Ready.");
+	}
 	
 	updateMesh();
 }
