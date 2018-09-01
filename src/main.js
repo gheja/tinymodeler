@@ -28,6 +28,8 @@ let _faceRedefinitionStep = 0;
 let _mesh;
 
 let _selectionSpheres = [];
+let _pointSphereBase;
+let _pointSpheres = [];
 
 let _model = { };
 
@@ -151,6 +153,10 @@ function createScene()
 	
 	_selectionSpheres[5] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7);
+	
+	_pointSphereBase = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.1 }, scene);
+	_pointSphereBase.material = quickMaterial(0.5, 0.5, 0.5, 0.7);
+	_pointSphereBase.setEnabled(false);
 	
 	return scene;
 	
@@ -365,6 +371,24 @@ function updateSelectionPoints()
 		}
 		
 		_currentFaceA.className = "selected";
+	}
+	
+	for (i=0; i<_pointSpheres.length; i++)
+	{
+		_pointSpheres[i].setEnabled(false);
+	}
+	
+	for (i=0; i<_model.points.length; i++)
+	{
+		if (_pointSpheres.length <= i)
+		{
+			_pointSpheres.push(_pointSphereBase.createInstance());
+		}
+		
+		_pointSpheres[i].setEnabled(true);
+		_pointSpheres[i].position.x = _model.points[i].x - 50;
+		_pointSpheres[i].position.y = _model.points[i].y;
+		_pointSpheres[i].position.z = _model.points[i].z - 50;
 	}
 }
 
