@@ -1,11 +1,10 @@
 "use strict";
 
 let _lastFrameRenderTime;
-let canvas;
-let engine;
-let scene;
-let camera;
-let sphere;
+let _canvas;
+let _engine;
+let _scene;
+let _camera;
 
 let _shadowGenerator;
 
@@ -34,7 +33,7 @@ let _modelDefaults = {
 };
 
 // the one to be processed by bjs
-let _finalModel = {};
+let _finalModel;
 
 function _copy(obj)
 {
@@ -70,7 +69,7 @@ function quickMaterial(r, g, b, a)
 {
 	let material;
 	
-	material = new BABYLON.StandardMaterial("", scene);
+	material = new BABYLON.StandardMaterial("", _scene);
 	material.diffuseColor = new BABYLON.Color3(r, g, b);
 	material.ambientColor = new BABYLON.Color3(r * 0.8, g * 0.8, b * 0.8);
 	if (a !== undefined)
@@ -86,7 +85,7 @@ function createScene()
 	// Create scene
 	let scene, plane, material, light1, light2, shadowGenerator1, shadowGenerator2;
 	
-	scene = new BABYLON.Scene(engine);
+	scene = new BABYLON.Scene(_engine);
 	
 	scene.clearColor = new BABYLON.Color3(98/255, 193/255, 229/255);
 	scene.ambientColor = new BABYLON.Color3(98/255, 193/255, 229/255);
@@ -97,14 +96,14 @@ function createScene()
 	light2 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(200, 200, -200), scene);
 	light2.intensity = 0.5;
 	
-	camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 150, new BABYLON.Vector3(0, 0, 0), scene);
-	camera.lowerBetaLimit = 0.01;
-	camera.upperBetaLimit = (Math.PI / 2) * 0.999;
-	camera.lowerRadiusLimit = 1;
-	camera.minZ = 0.2;
-	camera.inertia = 0.7;
+	_camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 150, new BABYLON.Vector3(0, 0, 0), scene);
+	_camera.lowerBetaLimit = 0.01;
+	_camera.upperBetaLimit = (Math.PI / 2) * 0.999;
+	_camera.lowerRadiusLimit = 1;
+	_camera.minZ = 0.2;
+	_camera.inertia = 0.7;
 	
-	camera.attachControl(canvas);
+	_camera.attachControl(_canvas);
 	
 	_mesh = new BABYLON.Mesh("custom", scene);
 	_mesh.material = quickMaterial(0.5, 0.5, 0.5);
@@ -181,7 +180,7 @@ function onRenderLoop()
 {
 	let now;
 	
-	if (!scene)
+	if (!_scene)
 	{
 		return;
 	}
@@ -198,14 +197,14 @@ function onRenderLoop()
 		_lastFrameRenderTime = now;
 	}
 	
-	scene.render();
+	_scene.render();
 }
 
 function onResize()
 {
-	canvas.width = window.innerWidth - 200;
-	canvas.height = window.innerHeight;
-	engine.resize();
+	_canvas.width = window.innerWidth - 200;
+	_canvas.height = window.innerHeight;
+	_engine.resize();
 }
 
 function onUpdate()
@@ -236,7 +235,7 @@ function onClick(event)
 {
 	let a;
 	
-	a = scene.pick(scene.pointerX, scene.pointerY);
+	a = _scene.pick(_scene.pointerX, _scene.pointerY);
 	
 	if (!a.pickedMesh || a.pickedMesh.pointIndex === undefined)
 	{
@@ -250,7 +249,7 @@ function onMouseMove(event)
 {
 	let a;
 	
-	a = scene.pick(scene.pointerX, scene.pointerY);
+	a = _scene.pick(_scene.pointerX, _scene.pointerY);
 	
 	if (!a.pickedMesh || a.pickedMesh.pointIndex === undefined)
 	{
@@ -813,8 +812,8 @@ function toggleShading()
 
 function resetView()
 {
-	scene.activeCamera.alpha = -Math.PI / 2;
-	scene.activeCamera.beta = Math.PI / 2 * 0.7;
+	_scene.activeCamera.alpha = -Math.PI / 2;
+	_scene.activeCamera.beta = Math.PI / 2 * 0.7;
 }
 
 function loadModelFromTextarea()
@@ -856,19 +855,19 @@ function init()
 	_selectionSpheres = [];
 	_pointSpheres = [];
 	
-	canvas = document.getElementById("renderCanvas")
-	engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
-	scene = createScene();
+	_canvas = document.getElementById("renderCanvas")
+	_engine = new BABYLON.Engine(_canvas, true, { preserveDrawingBuffer: true, stencil: true });
+	_scene = createScene();
 	
 	registerInputEvents(document.getElementById("point_edit_x"));
 	registerInputEvents(document.getElementById("point_edit_y"));
 	registerInputEvents(document.getElementById("point_edit_z"));
 	registerInputEvents(document.getElementById("scale_edit"));
 	
-	engine.runRenderLoop(onRenderLoop);
+	_engine.runRenderLoop(onRenderLoop);
 	window.addEventListener("resize", onResize);
-	canvas.addEventListener("mousemove", onMouseMove);
-	canvas.addEventListener("click", onClick);
+	_canvas.addEventListener("mousemove", onMouseMove);
+	_canvas.addEventListener("click", onClick);
 	onResize();
 	
 	localstorageLoad();
