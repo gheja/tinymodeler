@@ -27,7 +27,6 @@ body,
 	padding: 5px;
 	color: #ccc;
 	font-family: arial, sans serif;
-	font-weight: bold;
 	font-size: 9pt;
 }
 
@@ -45,6 +44,7 @@ div.head
 	background: rgba(0,0,0,0.2);
 	padding: 2px 0 2px 0;
 	margin: 0 0 5px 0;
+	font-weight: bold;
 }
 
 div.box
@@ -75,14 +75,14 @@ a:active,
 a:visited
 {
 	background: rgba(0,0,0,0.2);
-	color: #fc8;
+	color: #fff;
 	text-decoration: none;
 }
 
 a:hover
 {
-	background: rgba(0,0,0,0.5);
-	color: #fff;
+	background: #000;
+	color: #4bf;
 }
 
 a.selected
@@ -117,4 +117,9 @@ a.selected_c
 	width: 182px;
 	height: 100px;
 	font-size: 7pt;
+}
+
+#status
+{
+	font-weight: bold;
 }
