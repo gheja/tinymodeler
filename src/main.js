@@ -149,6 +149,9 @@ function createScene()
 	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[4].material = quickMaterial(0.0, 0.5, 1.0, 0.7);
 	
+	_selectionSpheres[5] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
+	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7);
+	
 	return scene;
 	
 	// Enable VR
@@ -281,10 +284,16 @@ function updateSelectionPoints()
 	moveSelectionSphere(2, null);
 	moveSelectionSphere(3, null);
 	moveSelectionSphere(4, null);
+	moveSelectionSphere(5, null);
 	
 	if (_hoveredPoint !== null)
 	{
 		moveSelectionSphere(0, _hoveredPoint);
+	}
+	
+	if (_currentPoint)
+	{
+		moveSelectionSphere(5, _currentPoint);
 	}
 	
 	if (_currentFace)
