@@ -130,7 +130,7 @@ function createScene()
 	
 	plane = BABYLON.Mesh.CreatePlane("ground", 150, scene);
 	plane.rotation.x = Math.PI / 2;
-	plane.position.y = 0;
+	plane.position.y = -0.1;
 	plane.receiveShadows = true;
 	plane.material = quickMaterial(98/255*0.3, 193/255*0.3, 229/255*0.3);
 	
