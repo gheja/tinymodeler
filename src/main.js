@@ -242,7 +242,7 @@ function onClick(event)
 		return;
 	}
 	
-	selectPoint({ target: { dataset: { pointId: a.pickedMesh.pointIndex }}});
+	selectPoint({ target: { dataset: { pointIndex: a.pickedMesh.pointIndex }}});
 }
 
 function onMouseMove(event)
@@ -257,7 +257,7 @@ function onMouseMove(event)
 		return;
 	}
 	
-	highlightPoint({ target: { dataset: { pointId: a.pickedMesh.pointIndex }}});
+	highlightPoint({ target: { dataset: { pointIndex: a.pickedMesh.pointIndex }}});
 }
 
 function onChange(event)
@@ -329,19 +329,19 @@ function updateSelectionPoints()
 		
 		if (_currentFace)
 		{
-			if (_currentFace.p1 == a[i].dataset.pointId)
+			if (_currentFace.p1 == a[i].dataset.pointIndex)
 			{
 				a[i].className = "selected_p1";
 			}
-			else if (_currentFace.p2 == a[i].dataset.pointId)
+			else if (_currentFace.p2 == a[i].dataset.pointIndex)
 			{
 				a[i].className = "selected_p2";
 			}
-			else if (_currentFace.p3 == a[i].dataset.pointId)
+			else if (_currentFace.p3 == a[i].dataset.pointIndex)
 			{
 				a[i].className = "selected_p3";
 			}
-			else if (_currentFace.p4 == a[i].dataset.pointId)
+			else if (_currentFace.p4 == a[i].dataset.pointIndex)
 			{
 				a[i].className = "selected_p4";
 			}
@@ -508,7 +508,7 @@ function updateSidebar()
 	for (i=0; i<_model.points.length; i++)
 	{
 		tmp = document.createElement("a");
-		tmp.dataset.pointId = i;
+		tmp.dataset.pointIndex = i;
 		tmp.href = "#";
 		tmp.id = "point-" + i;
 		tmp.onclick = selectPoint;
@@ -526,7 +526,7 @@ function updateSidebar()
 	for (i=0; i<_model.faces.length; i++)
 	{
 		tmp = document.createElement("a");
-		tmp.dataset.pointId = i;
+		tmp.dataset.pointIndex = i;
 		tmp.href = "#";
 		tmp.id = "face-" + i;
 		tmp.onclick = selectFace;
@@ -602,7 +602,7 @@ function selectPoint(event)
 	
 	if (_faceRedefinitionStep == 1)
 	{
-		_currentFace.p1 = obj.dataset.pointId;
+		_currentFace.p1 = obj.dataset.pointIndex;
 		selectCurrentFacePoints();
 		_faceRedefinitionStep = 2;
 		setStatus("Select second point.");
@@ -610,7 +610,7 @@ function selectPoint(event)
 	}
 	else if (_faceRedefinitionStep == 2)
 	{
-		_currentFace.p2 = obj.dataset.pointId;
+		_currentFace.p2 = obj.dataset.pointIndex;
 		selectCurrentFacePoints();
 		_faceRedefinitionStep = 3;
 		setStatus("Select third point.");
@@ -618,7 +618,7 @@ function selectPoint(event)
 	}
 	else if (_faceRedefinitionStep == 3)
 	{
-		_currentFace.p3 = obj.dataset.pointId;
+		_currentFace.p3 = obj.dataset.pointIndex;
 		selectCurrentFacePoints();
 		_faceRedefinitionStep = 4;
 		setStatus("Select fourth point.");
@@ -626,7 +626,7 @@ function selectPoint(event)
 	}
 	else if (_faceRedefinitionStep == 4)
 	{
-		_currentFace.p4 = obj.dataset.pointId;
+		_currentFace.p4 = obj.dataset.pointIndex;
 		selectCurrentFacePoints();
 		updateCurrentFace();
 		updateModel();
@@ -638,7 +638,7 @@ function selectPoint(event)
 	
 	unselectAll();
 	
-	_currentPoint = _model.points[obj.dataset.pointId];
+	_currentPoint = _model.points[obj.dataset.pointIndex];
 	
 	_currentPointA = obj;
 	
@@ -686,7 +686,7 @@ function moveSelectionSphere(i, point)
 function highlightPoint(event)
 {
 	
-	_hoveredPoint = _model.points[event.target.dataset.pointId];
+	_hoveredPoint = _model.points[event.target.dataset.pointIndex];
 	updateSelectionPoints();
 }
 
@@ -721,7 +721,7 @@ function selectFace(event)
 {
 	unselectAll();
 	
-	_currentFace = _model.faces[event.target.dataset.pointId];
+	_currentFace = _model.faces[event.target.dataset.pointIndex];
 	
 	_currentFaceA = event.target;
 	
