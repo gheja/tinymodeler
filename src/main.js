@@ -67,15 +67,15 @@ function createScene()
 	
 	// scene.createDefaultEnvironment();
 	
-	light1 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(-30, 30, -30), scene);
+	light1 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(-200, 200, -200), scene);
 	light1.intensity = 0.8;
 	
-	light2 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(30, 30, 30), scene);
+	light2 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(200, 200, -200), scene);
 	light2.intensity = 0.5;
 	
-	camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene);
-	camera.lowerBetaLimit = 0.1;
-	camera.upperBetaLimit = (Math.PI / 2) * 0.99;
+	camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 150, new BABYLON.Vector3(0, 0, 0), scene);
+	camera.lowerBetaLimit = 0.01;
+	camera.upperBetaLimit = (Math.PI / 2) * 0.999;
 	camera.lowerRadiusLimit = 1;
 	camera.minZ = 0.2;
 	camera.inertia = 0.7;
@@ -96,26 +96,26 @@ function createScene()
 //	shadowGenerator2.blurKernel = 32;
 //	shadowGenerator2.addShadowCaster(_mesh, true);
 	
-	plane = BABYLON.Mesh.CreatePlane("ground", 100, scene);
+	plane = BABYLON.Mesh.CreatePlane("ground", 150, scene);
 	plane.rotation.x = Math.PI / 2;
-	plane.position.y = -5;
+	plane.position.y = 0;
 	plane.receiveShadows = true;
 	plane.material = quickMaterial(98/255*0.3, 193/255*0.3, 229/255*0.3);
 	
-	_selectionSpheres[0] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.25 }, scene);
-	_selectionSpheres[0].material = quickMaterial(1.0, 0.5, 0.0);
+	_selectionSpheres[0] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
+	_selectionSpheres[0].material = quickMaterial(1.0, 0.5, 0.0, 0.7);
 	
-	_selectionSpheres[1] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[1].material = quickMaterial(1.0, 0.0, 0.0);
+	_selectionSpheres[1] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
+	_selectionSpheres[1].material = quickMaterial(1.0, 0.0, 0.0, 0.7);
 	
-	_selectionSpheres[2] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5);
+	_selectionSpheres[2] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
+	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5, 0.7);
 	
-	_selectionSpheres[3] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[3].material = quickMaterial(0.6, 0.0, 1.0);
+	_selectionSpheres[3] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
+	_selectionSpheres[3].material = quickMaterial(0.6, 0.0, 1.0, 0.7);
 	
-	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.2 }, scene);
-	_selectionSpheres[4].material = quickMaterial(0.0, 0.5, 1.0);
+	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
+	_selectionSpheres[4].material = quickMaterial(0.0, 0.5, 1.0, 0.7);
 	
 	return scene;
 	
