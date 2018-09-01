@@ -144,10 +144,10 @@ function createScene()
 	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5, 0.7);
 	
 	_selectionSpheres[3] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[3].material = quickMaterial(0.6, 0.0, 1.0, 0.7);
+	_selectionSpheres[3].material = quickMaterial(0.4, 0.0, 1.0, 0.7);
 	
 	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[4].material = quickMaterial(0.0, 0.5, 1.0, 0.7);
+	_selectionSpheres[4].material = quickMaterial(0.0, 0.2, 1.0, 0.7);
 	
 	_selectionSpheres[5] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7);
