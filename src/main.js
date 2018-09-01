@@ -16,8 +16,6 @@ let _boxes;
 let _shadowGenerator;
 let _light;
 
-let _flatShading;
-
 let _currentPoint;
 let _hoveredPoint;
 let _currentPointA;
@@ -31,12 +29,22 @@ let _mesh;
 
 let _selectionSpheres = [];
 
-let _model = {
-	scale: 1.0,
+let _model = { };
+
+let _modelDefaults = {
+	scale: 10,
 	points: [],
 	faces: [],
 	flatShaded: false
 };
+
+// the one to be processed by bjs
+let _finalModel = {};
+
+function _copy(obj)
+{
+	return JSON.parse(JSON.stringify(obj));
+}
 
 function clamp(min, max, x)
 {
@@ -156,15 +164,9 @@ function localstorageSave()
 
 function localstorageLoad()
 {
-
 	_model = JSON.parse(localStorage.getItem("editor:model")) || {};
 	
-	setDefaults(_model, {
-		scale: 10,
-		points: [],
-		faces: [],
-		flatShaded: false
-	});
+	setDefaults(_model, _modelDefaults);
 }
 
 function onRenderLoop()
@@ -237,30 +239,24 @@ function updateMesh()
 {
 	let positions, indices, normals, vertexData, i;
 	
-	// positions = [-5, 2, -3, -7, -2, -3, -3, -2, -3, 5, 2, 3, 7, -2, 3, 3, -2, 3];
-	// indices = [0, 1, 2, 3, 4, 5];
-	// normals = [];
-	
 	positions = [];
 	indices = [];
 	normals = [];
 	
-	for (i=0; i<_model.points.length; i++)
+	for (i=0; i<_finalModel.points.length; i++)
 	{
-		positions.push(_model.points[i].x * 1 - 50);
-		positions.push(_model.points[i].y * 1);
-		positions.push(_model.points[i].z * 1 - 50);
+		positions.push(_finalModel.points[i] * 1 - (i % 3 != 1 ? 50 : 0)); // pad all positions except Y
 	}
 	
-	for (i=0; i<_model.faces.length; i++)
+	for (i=0; i<_finalModel.faces.length; i += 4)
 	{
-		indices.push(_model.faces[i].p1 * 1);
-		indices.push(_model.faces[i].p2 * 1);
-		indices.push(_model.faces[i].p3 * 1);
+		indices.push(_finalModel.faces[i] * 1);
+		indices.push(_finalModel.faces[i + 1] * 1);
+		indices.push(_finalModel.faces[i + 2] * 1);
 		
-		indices.push(_model.faces[i].p3 * 1);
-		indices.push(_model.faces[i].p4 * 1);
-		indices.push(_model.faces[i].p1 * 1);
+		indices.push(_finalModel.faces[i + 2] * 1);
+		indices.push(_finalModel.faces[i + 3] * 1);
+		indices.push(_finalModel.faces[i] * 1);
 	}
 	
 	BABYLON.VertexData.ComputeNormals(positions, indices, normals);
@@ -272,12 +268,10 @@ function updateMesh()
 	
 	vertexData.applyToMesh(_mesh);
 	
-	if (_flatShading)
+	if (_finalModel.flatShaded)
 	{
 		_mesh.convertToFlatShadedMesh();
 	}
-	
-	localstorageSave();
 }
 
 function updateSelectionPoints()
@@ -323,7 +317,85 @@ function updateModel()
 	updateScale();
 	updateCurrentPoint();
 	updateSelectionPoints();
+	
+	convertEditableModelToFinal();
+	
 	updateMesh();
+	updateSidebar();
+	
+	localstorageSave();
+}
+
+function getFinalModelData()
+{
+	let i, s;
+	
+	s = "";
+	s += (_model.flatShaded ? 0 : 1) + "  ";
+	s += _model.scale + "  ";
+	
+	for (i=0; i<_model.points.length; i++)
+	{
+		s += _model.points[i].x + " " + _model.points[i].y + " " + _model.points[i].z + " ";
+	}
+	s = s.trim();
+	
+	s += "  ";
+	
+	for (i=0; i<_model.faces.length; i++)
+	{
+		s += _model.faces[i].p1 + " " + _model.faces[i].p2 + " " + _model.faces[i].p3 + " "+ _model.faces[i].p4 + " ";
+	}
+	s = s.trim();
+	
+	return s;
+}
+
+function parseFinalModelData(s)
+{
+	let a;
+	
+	a = s.split("  ");
+	
+	return {
+		flatShaded: a[0],
+		scale: a[1],
+		points: a[2].split(" "),
+		faces: a[3].split(" ")
+	};
+}
+
+function convertFinalModelToEditable()
+{
+	let a, b, i;
+	
+	_model = _copy(_modelDefaults);
+	_model.flatShaded = _finalModel.flatShaded * 1;
+	_model.scale = _finalModel.scale * 1;
+	
+	for (i=0; i<_finalModel.points.length; i+=3)
+	{
+		_model.points.push({
+			x: _finalModel.points[i] * 1,
+			y: _finalModel.points[i + 1] * 1,
+			z: _finalModel.points[i + 2] * 1
+		});
+	}
+	
+	for (i=0; i<_finalModel.faces.length; i+=4)
+	{
+		_model.faces.push({
+			p1: _finalModel.faces[i] * 1,
+			p2: _finalModel.faces[i + 1] * 1,
+			p3: _finalModel.faces[i + 2] * 1,
+			p4: _finalModel.faces[i + 3] * 1
+		});
+	}
+}
+
+function convertEditableModelToFinal()
+{
+	_finalModel = parseFinalModelData(getFinalModelData());
 }
 
 function updateSidebar()
@@ -365,25 +437,11 @@ function updateSidebar()
 	}
 	
 	
-	s = "";
-	
-	s += _model.scale + "/";
-	
-	for (i=0; i<_model.points.length; i++)
-	{
-		s += _model.points[i].x + " " + _model.points[i].y + " " + _model.points[i].z + " ";
-	}
-	
-	s += "/";
-	
-	for (i=0; i<_model.faces.length; i++)
-	{
-		s += _model.faces[i].p1 + " " + _model.faces[i].p2 + " " + _model.faces[i].p3 + " "+ _model.faces[i].p4 + " ";
-	}
+	s = getFinalModelData();
 	
 	obj = document.getElementById("data");
 	
-	obj.innerHTML = s;
+	obj.innerHTML = s + "<br/>" + s.length + " characters";
 }
 
 function unselectPoint()
@@ -432,7 +490,7 @@ function updateCurrentPoint()
 	_currentPoint.y = document.getElementById("point_edit_y").value * 1;
 	_currentPoint.z = document.getElementById("point_edit_z").value * 1;
 	
-	updateMesh();
+	updateModel();
 }
 
 function selectCurrentFacePoints()
@@ -640,9 +698,9 @@ function toggleWireframe()
 
 function toggleShading()
 {
-	_flatShading = !_flatShading;
+	_model.flatShaded = !_model.flatShaded;
 	
-	if (_flatShading)
+	if (_model.flatShaded)
 	{
 		setStatus("Flat shading. Ready.");
 	}
@@ -651,7 +709,7 @@ function toggleShading()
 		setStatus("Auto shading. Ready.");
 	}
 	
-	updateMesh();
+	updateModel();
 }
 
 function resetView()
@@ -684,7 +742,7 @@ function init()
 	localstorageLoad();
 	updateSidebar();
 	unselectAll();
-	updateMesh();
+	updateModel();
 	resetView();
 	
 	setStatus("Ready.");
