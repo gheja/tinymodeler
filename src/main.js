@@ -1,7 +1,7 @@
 "use strict";
 
-let _lastFrameRenderTime = 0;
-let canvas = document.getElementById("renderCanvas");
+let _lastFrameRenderTime;
+let canvas;
 let engine;
 let scene;
 let camera;
@@ -16,15 +16,15 @@ let _currentPointA;
 let _currentFace;
 let _currentFaceA;
 
-let _faceRedefinitionStep = 0;
+let _faceRedefinitionStep;
 
 let _mesh;
 
-let _selectionSpheres = [];
+let _selectionSpheres;
 let _pointSphereBase;
-let _pointSpheres = [];
+let _pointSpheres;
 
-let _model = { };
+let _model;
 
 let _modelDefaults = {
 	scale: 10,
@@ -851,6 +851,12 @@ function registerInputEvents(obj)
 
 function init()
 {
+	_lastFrameRenderTime = 0;
+	_faceRedefinitionStep = 0;
+	_selectionSpheres = [];
+	_pointSpheres = [];
+	
+	canvas = document.getElementById("renderCanvas")
 	engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 	scene = createScene();
 	
