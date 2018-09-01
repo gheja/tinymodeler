@@ -39,15 +39,19 @@ function clamp(min, max, x)
 	return Math.min(Math.max(x, min), max);
 }
 
-function quickMaterial(r, g, b)
+function quickMaterial(r, g, b, a)
 {
-	let a;
+	let material;
 	
-	a = new BABYLON.StandardMaterial("", scene);
-	a.diffuseColor = new BABYLON.Color3(r, g, b);
-	a.ambientColor = new BABYLON.Color3(r * 0.8, g * 0.8, b * 0.8);
+	material = new BABYLON.StandardMaterial("", scene);
+	material.diffuseColor = new BABYLON.Color3(r, g, b);
+	material.ambientColor = new BABYLON.Color3(r * 0.8, g * 0.8, b * 0.8);
+	if (a !== undefined)
+	{
+		material.alpha = a;
+	}
 	
-	return a;
+	return material;
 }
 
 function createScene()
