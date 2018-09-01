@@ -65,11 +65,11 @@ function setDefaults(obj, defaults)
 	}
 }
 
-function quickMaterial(r, g, b, a)
+function quickMaterial(r, g, b, a, scene)
 {
 	let material;
 	
-	material = new BABYLON.StandardMaterial("", _scene);
+	material = new BABYLON.StandardMaterial("", scene);
 	material.diffuseColor = new BABYLON.Color3(r, g, b);
 	material.ambientColor = new BABYLON.Color3(r * 0.8, g * 0.8, b * 0.8);
 	if (a !== undefined)
@@ -106,7 +106,7 @@ function createScene()
 	_camera.attachControl(_canvas);
 	
 	_mesh = new BABYLON.Mesh("custom", scene);
-	_mesh.material = quickMaterial(0.5, 0.5, 0.5);
+	_mesh.material = quickMaterial(0.5, 0.5, 0.5, 1, scene);
 	_mesh.isPickable = false;
 	
 	shadowGenerator1 = new BABYLON.ShadowGenerator(1024, light1);
@@ -118,35 +118,35 @@ function createScene()
 	plane.rotation.x = Math.PI / 2;
 	plane.position.y = -0.1;
 	plane.receiveShadows = true;
-	plane.material = quickMaterial(98/255*0.3, 193/255*0.3, 229/255*0.3);
+	plane.material = quickMaterial(98/255*0.3, 193/255*0.3, 229/255*0.3, 1, scene);
 	plane.isPickable = false;
 	
 	_selectionSpheres[0] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
-	_selectionSpheres[0].material = quickMaterial(1.0, 0.5, 0.0, 0.7);
+	_selectionSpheres[0].material = quickMaterial(1.0, 0.5, 0.0, 0.7, scene);
 	_selectionSpheres[0].isPickable = false;
 	
 	_selectionSpheres[1] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[1].material = quickMaterial(1.0, 0.0, 0.0, 0.7);
+	_selectionSpheres[1].material = quickMaterial(1.0, 0.0, 0.0, 0.7, scene);
 	_selectionSpheres[1].isPickable = false;
 	
 	_selectionSpheres[2] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5, 0.7);
+	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5, 0.7, scene);
 	_selectionSpheres[2].isPickable = false;
 	
 	_selectionSpheres[3] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[3].material = quickMaterial(0.4, 0.0, 1.0, 0.7);
+	_selectionSpheres[3].material = quickMaterial(0.4, 0.0, 1.0, 0.7, scene);
 	_selectionSpheres[3].isPickable = false;
 	
 	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[4].material = quickMaterial(0.0, 0.2, 1.0, 0.7);
+	_selectionSpheres[4].material = quickMaterial(0.0, 0.2, 1.0, 0.7, scene);
 	_selectionSpheres[4].isPickable = false;
 	
 	_selectionSpheres[5] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
-	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7);
+	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7, scene);
 	_selectionSpheres[5].isPickable = false;
 	
 	_pointSphereBase = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.1 }, scene);
-	_pointSphereBase.material = quickMaterial(0.5, 0.5, 0.5, 0.7);
+	_pointSphereBase.material = quickMaterial(0.5, 0.5, 0.5, 0.7, scene);
 	_pointSphereBase.setEnabled(false);
 	
 	return scene;
