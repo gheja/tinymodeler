@@ -6,15 +6,8 @@ let engine;
 let scene;
 let camera;
 let sphere;
-let n = 0;
 
-let _a;
-let _material;
-let _loader;
-let _box;
-let _boxes;
 let _shadowGenerator;
-let _light;
 
 let _currentPoint;
 let _hoveredPoint;
@@ -97,9 +90,6 @@ function createScene()
 	
 	scene.clearColor = new BABYLON.Color3(98/255, 193/255, 229/255);
 	scene.ambientColor = new BABYLON.Color3(98/255, 193/255, 229/255);
-	// scene.fogColor = new BABYLON.Color3(98/255, 193/255, 229/255);
-	
-	// scene.createDefaultEnvironment();
 	
 	light1 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(-200, 200, -200), scene);
 	light1.intensity = 0.8;
@@ -119,17 +109,11 @@ function createScene()
 	_mesh = new BABYLON.Mesh("custom", scene);
 	_mesh.material = quickMaterial(0.5, 0.5, 0.5);
 	_mesh.isPickable = false;
-	// var box1 = BABYLON.Mesh.CreateBox("b1", 1.0, scene);
 	
 	shadowGenerator1 = new BABYLON.ShadowGenerator(1024, light1);
 	shadowGenerator1.useBlurExponentialShadowMap = true;
 	shadowGenerator1.blurKernel = 32;
 	shadowGenerator1.addShadowCaster(_mesh, true);
-	
-//	shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light2);
-//	shadowGenerator2.useBlurExponentialShadowMap = true;
-//	shadowGenerator2.blurKernel = 32;
-//	shadowGenerator2.addShadowCaster(_mesh, true);
 	
 	plane = BABYLON.Mesh.CreatePlane("ground", 150, scene);
 	plane.rotation.x = Math.PI / 2;
@@ -243,7 +227,6 @@ function onWheel(event)
 		change = 1;
 	}
 	
-//	event.target.value = Math.floor((event.target.value * 1 + change) * 100) / 100;
 	event.target.value = clamp(0, 100, Math.round(event.target.value * 1) + change);
 	
 	updateModel();
@@ -389,7 +372,6 @@ function updateSelectionPoints()
 		if (_currentFace.p1 !== null)
 		{
 			moveSelectionSphere(1, _model.points[_currentFace.p1]);
-			// TODO: highlight point selector
 		}
 		
 		if (_currentFace.p2 !== null)
