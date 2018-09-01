@@ -430,7 +430,7 @@ function getFinalModelData()
 	let i, s;
 	
 	s = "";
-	s += (_model.flatShaded ? 0 : 1) + "  ";
+	s += (_model.flatShaded ? 1 : 0) + "  ";
 	s += _model.scale + "  ";
 	
 	for (i=0; i<_model.points.length; i++)
@@ -457,7 +457,7 @@ function parseFinalModelData(s)
 	a = s.split("  ");
 	
 	return {
-		flatShaded: a[0],
+		flatShaded: a[0] * 1,
 		scale: a[1],
 		points: a[2].split(" "),
 		faces: a[3].split(" ")
