@@ -213,9 +213,9 @@ function updateMesh()
 	
 	for (i=0; i<_points.length; i++)
 	{
-		positions.push(_points[i].x * 1 * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2);
-		positions.push(_points[i].y * 1 * _boundingBoxSize / 10);
-		positions.push(_points[i].z * 1 * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2);
+		positions.push(_points[i].x * 1 - 50);
+		positions.push(_points[i].y * 1);
+		positions.push(_points[i].z * 1 - 50);
 	}
 	
 	for (i=0; i<_faces.length; i++)
@@ -487,9 +487,9 @@ function moveSelectionSphere(i, point)
 	if (point)
 	{
 		_selectionSpheres[i].setEnabled(true);
-		_selectionSpheres[i].position.x = point.x * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2;
-		_selectionSpheres[i].position.y = point.y * _boundingBoxSize / 10;
-		_selectionSpheres[i].position.z = point.z * _boundingBoxSize / 10 - _boundingBoxSize / 10 / 2;
+		_selectionSpheres[i].position.x = point.x - 50;
+		_selectionSpheres[i].position.y = point.y;
+		_selectionSpheres[i].position.z = point.z - 50;
 	}
 	else
 	{
