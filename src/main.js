@@ -118,6 +118,7 @@ function createScene()
 	
 	_mesh = new BABYLON.Mesh("custom", scene);
 	_mesh.material = quickMaterial(0.5, 0.5, 0.5);
+	_mesh.isPickable = false;
 	// var box1 = BABYLON.Mesh.CreateBox("b1", 1.0, scene);
 	
 	shadowGenerator1 = new BABYLON.ShadowGenerator(1024, light1);
@@ -135,24 +136,31 @@ function createScene()
 	plane.position.y = -0.1;
 	plane.receiveShadows = true;
 	plane.material = quickMaterial(98/255*0.3, 193/255*0.3, 229/255*0.3);
+	plane.isPickable = false;
 	
 	_selectionSpheres[0] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
 	_selectionSpheres[0].material = quickMaterial(1.0, 0.5, 0.0, 0.7);
+	_selectionSpheres[0].isPickable = false;
 	
 	_selectionSpheres[1] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[1].material = quickMaterial(1.0, 0.0, 0.0, 0.7);
+	_selectionSpheres[1].isPickable = false;
 	
 	_selectionSpheres[2] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[2].material = quickMaterial(1.0, 0.0, 0.5, 0.7);
+	_selectionSpheres[2].isPickable = false;
 	
 	_selectionSpheres[3] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[3].material = quickMaterial(0.4, 0.0, 1.0, 0.7);
+	_selectionSpheres[3].isPickable = false;
 	
 	_selectionSpheres[4] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[4].material = quickMaterial(0.0, 0.2, 1.0, 0.7);
+	_selectionSpheres[4].isPickable = false;
 	
 	_selectionSpheres[5] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.5 }, scene);
 	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7);
+	_selectionSpheres[5].isPickable = false;
 	
 	_pointSphereBase = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.1 }, scene);
 	_pointSphereBase.material = quickMaterial(0.5, 0.5, 0.5, 0.7);
@@ -239,6 +247,34 @@ function onWheel(event)
 	event.target.value = clamp(0, 100, Math.round(event.target.value * 1) + change);
 	
 	updateModel();
+}
+
+function onClick(event)
+{
+	let a;
+	
+	a = scene.pick(scene.pointerX, scene.pointerY);
+	
+	if (!a.pickedMesh || !a.pickedMesh.pointIndex)
+	{
+		return;
+	}
+	
+	selectPoint({ target: { dataset: { pointId: a.pickedMesh.pointIndex }}});
+}
+
+function onMouseMove(event)
+{
+	let a;
+	
+	a = scene.pick(scene.pointerX, scene.pointerY);
+	
+	if (!a.pickedMesh || !a.pickedMesh.pointIndex)
+	{
+		return;
+	}
+	
+	highlightPoint({ target: { dataset: { pointId: a.pickedMesh.pointIndex }}});
 }
 
 function onChange(event)
@@ -386,6 +422,7 @@ function updateSelectionPoints()
 		}
 		
 		_pointSpheres[i].setEnabled(true);
+		_pointSpheres[i].pointIndex = i;
 		_pointSpheres[i].position.x = _model.points[i].x - 50;
 		_pointSpheres[i].position.y = _model.points[i].y;
 		_pointSpheres[i].position.z = _model.points[i].z - 50;
@@ -841,6 +878,8 @@ function init()
 	
 	engine.runRenderLoop(onRenderLoop);
 	window.addEventListener("resize", onResize);
+	canvas.addEventListener("mousemove", onMouseMove);
+	canvas.addEventListener("click", onClick);
 	onResize();
 	
 	localstorageLoad();
