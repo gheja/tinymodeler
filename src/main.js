@@ -255,7 +255,7 @@ function onClick(event)
 	
 	a = scene.pick(scene.pointerX, scene.pointerY);
 	
-	if (!a.pickedMesh || !a.pickedMesh.pointIndex)
+	if (!a.pickedMesh || a.pickedMesh.pointIndex === undefined)
 	{
 		return;
 	}
@@ -269,7 +269,7 @@ function onMouseMove(event)
 	
 	a = scene.pick(scene.pointerX, scene.pointerY);
 	
-	if (!a.pickedMesh || !a.pickedMesh.pointIndex)
+	if (!a.pickedMesh || a.pickedMesh.pointIndex === undefined)
 	{
 		return;
 	}
