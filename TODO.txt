@@ -1,0 +1,12 @@
+TODO
+  * add face groups
+    * from face
+    * to face
+    * color (r, g, b, a)
+    * translation (x, y, z)
+    * rotation (x, y, z)
+    * [translation (x, y, z)]
+    * [rotation (x, y, z)]
+    * ...
+  * display a fixed size object for scale
+  * fix clear model exception
