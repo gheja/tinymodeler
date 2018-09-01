@@ -16,7 +16,7 @@ let _boxes;
 let _shadowGenerator;
 let _light;
 
-let _boundingBoxSize;
+let _scale;
 let _flatShading;
 
 let _points;
@@ -194,9 +194,9 @@ function onChange(event)
 	updateModel();
 }
 
-function updateBoundingBox()
+function updateScale()
 {
-	_boundingBoxSize = document.getElementById("bounding_box_edit").value * 1;
+	_scale = document.getElementById("scale_edit").value * 1;
 }
 
 function updateMesh()
@@ -286,7 +286,7 @@ function updateSelectionPoints()
 
 function updateModel()
 {
-	updateBoundingBox();
+	updateScale();
 	updateCurrentPoint();
 	updateSelectionPoints();
 	updateMesh();
@@ -333,7 +333,7 @@ function updateSidebar()
 	
 	s = "";
 	
-	s += _boundingBoxSize + "/";
+	s += _scale + "/";
 	
 	for (i=0; i<_points.length; i++)
 	{
@@ -619,14 +619,14 @@ function init()
 {
 	engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 	scene = createScene();
-	_boundingBoxSize = 10;
+	_scale = 10;
 	_points = [];
 	_faces = [];
 	
 	registerInputEvents(document.getElementById("point_edit_x"));
 	registerInputEvents(document.getElementById("point_edit_y"));
 	registerInputEvents(document.getElementById("point_edit_z"));
-	registerInputEvents(document.getElementById("bounding_box_edit"));
+	registerInputEvents(document.getElementById("scale_edit"));
 	
 	engine.runRenderLoop(onRenderLoop);
 	window.addEventListener("resize", onResize);
