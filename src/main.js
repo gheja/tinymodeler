@@ -39,6 +39,26 @@ function clamp(min, max, x)
 	return Math.min(Math.max(x, min), max);
 }
 
+function setDefaults(obj, defaults)
+{
+	let i;
+	
+	for (i in defaults)
+	{
+		if (!defaults.hasOwnProperty(i))
+		{
+			continue;
+		}
+		
+		if (obj.hasOwnProperty(i))
+		{
+			continue;
+		}
+		
+		obj[i] = defaults[i];
+	}
+}
+
 function quickMaterial(r, g, b, a)
 {
 	let material;
