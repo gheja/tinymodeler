@@ -444,15 +444,33 @@ function selectPoint(event)
 		updateModel();
 		updateSidebar();
 		_faceRedefinitionStep = 0;
-		setStatus("Done.");
+		setStatus("Ready.");
 		return;
 	}
 	
 	unselectAll();
 	
-	_currentPointA = obj;
 	_currentPoint = _points[obj.dataset.pointId];
 	
+	_currentPointA = obj;
+	_currentPointA.className = "selected";
+	
+	document.getElementById("point_edit_x").value = _currentPoint.x;
+	document.getElementById("point_edit_y").value = _currentPoint.y;
+	document.getElementById("point_edit_z").value = _currentPoint.z;
+	
+	setStatus("Point selected for edit.");
+	
+	updateSelectionPoints();
+}
+
+function selectPointByIndex(index)
+{
+	unselectAll();
+	
+	_currentPoint = _points[index];
+	
+	_currentPointA = document.getElementById("point-" + index);
 	_currentPointA.className = "selected";
 	
 	document.getElementById("point_edit_x").value = _currentPoint.x;
@@ -494,12 +512,19 @@ function unhighlightPoint(event)
 
 function addPoint()
 {
-	_points.push({ x: 0, y: 0, z: 0 });
+	if (_currentPoint)
+	{
+		_points.push({ x: _currentPoint.x, y: _currentPoint.y, z: _currentPoint.z });
+	}
+	else
+	{
+		_points.push({ x: 0, y: 0, z: 0 });
+	}
 	
 	updateSidebar();
 	
 	// select last element
-	// selectPoint({ target: tmp });
+	selectPointByIndex(_points.length - 1);
 }
 
 function updateCurrentFace()
@@ -510,9 +535,22 @@ function selectFace(event)
 {
 	unselectAll();
 	
-	_currentFaceA = event.target;
 	_currentFace = _faces[event.target.dataset.pointId];
 	
+	_currentFaceA = event.target;
+	_currentFaceA.className = "selected";
+	
+	selectCurrentFacePoints();
+	updateSelectionPoints();
+}
+
+function selectFaceByIndex(index)
+{
+	unselectAll();
+	
+	_currentFace = _faces[index];
+	
+	_currentFaceA = document.getElementById("face-" + index);
 	_currentFaceA.className = "selected";
 	
 	selectCurrentFacePoints();
@@ -539,8 +577,8 @@ function addFace()
 	updateSidebar();
 	
 	// select last element
-	// selectFace({ target: tmp });
-	// redefineFace();
+	selectFaceByIndex(_faces.length - 1);
+	redefineFace();
 }
 
 function deleteCurrentFace()
