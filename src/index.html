@@ -39,8 +39,8 @@
 				<div class="head">Data</div>
 				<textarea id="data"></textarea>
 				<div id="data_size">-</div>
-				<a href="#" onclick="loadModelFromTextarea(); return false;">load</a>
-				<a href="#" onclick="clearModel(); return false;">clear</a>
+				<a href="#" onclick="if (confirm('Are you sure?')) { loadModelFromTextarea(); } return false;">load</a>
+				<a href="#" onclick="if (confirm('Are you sure?')) { clearModel(); } return false;">clear</a>
 			</div>
 			
 			<div class="box" id="scale">
