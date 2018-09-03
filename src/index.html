@@ -13,7 +13,7 @@
 	<body>
 		<canvas id="renderCanvas"></canvas>
 		<div id="sidebar">
-			<div class="box" id="point_edit">
+			<div class="box">
 				<div class="head">Point edit</div>
 				<label>x:</label> <input type="text" value="1" id="point_edit_x"/>
 				<label>y:</label> <input type="text" value="1" id="point_edit_y"/>
@@ -32,7 +32,37 @@
 				<a href="#" onclick="addFace(); return false;">add</a>
 				<a href="#" onclick="redefineFace(); return false;">redefine</a>
 				<a href="#" onclick="redefineFaceCancel(); return false;">cancel</a>
+<!--
 				<a href="#" onclick="deleteFace(); return false;">delete</a>
+-->
+			</div>
+			
+			<div class="box">
+				<div class="head">Face group edit</div>
+				<label>Material:</label> <input type="text" value="1" id="group_edit_material"/><br/>
+				
+				<label>Count:</label> <input type="text" value="0" id="group_edit_count"/><br/>
+				
+				Pad:<br/>
+				<label>x:</label> <input type="text" value="0" id="group_edit_px"/>
+				<label>y:</label> <input type="text" value="0" id="group_edit_py"/>
+				<label>z:</label> <input type="text" value="0" id="group_edit_pz"/><br/>
+				
+				Rotation:<br/>
+				<label>x:</label> <input type="text" value="0" id="group_edit_rx"/>
+				<label>y:</label> <input type="text" value="0" id="group_edit_ry"/>
+				<label>z:</label> <input type="text" value="0" id="group_edit_rz"/><br/>
+				<a href="#" onclick="editGroupFaces(); return false;">select/unselect points</a>
+				<a href="#" onclick="finishGroupFaces(); return false;">done</a>
+			</div>
+			
+			<div class="box">
+				<div class="head">Face groups</div>
+				<div id="groups"></div>
+				<a href="#" onclick="addGroup(); return false;">add</a>
+<!--
+				<a href="#" onclick="deleteFace(); return false;">delete</a>
+-->
 			</div>
 			
 			<div class="box">

@@ -18,6 +18,23 @@ class EFace
 		this.p2 = p2;
 		this.p3 = p3;
 		this.p4 = p4;
+		this.groupIndex = 0;
+	}
+}
+
+class EGroup
+{
+	constructor(materialIndex)
+	{
+		this.materialIndex = materialIndex;
+		
+		this.cloneCount = 0;
+		this.clonePadX = 0;
+		this.clonePadY = 0;
+		this.clonePadZ = 0;
+		this.cloneRotateX = 0;
+		this.cloneRotateY = 0;
+		this.cloneRotateZ = 0;
 	}
 }
 
@@ -47,7 +64,11 @@ let _currentPointA;
 let _currentFace;
 let _currentFaceA;
 
+let _currentGroupIndex;
+let _currentGroupA;
+
 let _faceRedefinitionStep;
+let _groupRedefinitionStep;
 
 let _mesh;
 
@@ -61,6 +82,7 @@ let _modelDefaults = {
 	scale: 10,
 	points: [],
 	faces: [],
+	groups: [],
 	flatShaded: false
 };
 
@@ -298,6 +320,7 @@ function onMouseMove(event)
 function onChange(event)
 {
 	updateCurrentPoint();
+	updateCurrentGroup();
 	updateModel();
 }
 
@@ -389,6 +412,12 @@ function updateSelectionPoints()
 	{
 		a[i].className = "";
 	}
+	a = document.getElementById("groups").getElementsByTagName("a");
+	
+	for (i=0; i<a; i++)
+	{
+		a[i].className = "";
+	}
 	
 	if (_hoveredPoint !== null)
 	{
@@ -426,6 +455,11 @@ function updateSelectionPoints()
 		_currentFaceA.className = "selected";
 	}
 	
+	if (_currentGroupIndex != -1)
+	{
+		_currentGroupA.className = "selected";
+	}
+	
 	for (i=0; i<_pointSpheres.length; i++)
 	{
 		_pointSpheres[i].setEnabled(false);
@@ -446,11 +480,30 @@ function updateSelectionPoints()
 	}
 }
 
+function updateGroups()
+{
+	let i;
+	
+	for (i=0; i<_model.faces.length; i++)
+	{
+		if (_model.faces[i].groupIndex === undefined)
+		{
+			_model.faces[i].groupIndex = 0;
+		}
+	}
+}
+
+function reorderFaces()
+{
+	_model.faces.sort(function(a, b) { return b.groupIndex - a.groupIndex });
+}
+
 function updateModel()
 {
 	updateScale();
 	updateCurrentPoint();
 	updateSelectionPoints();
+	updateGroups();
 	
 	convertEditableModelToFinal();
 	
@@ -462,7 +515,7 @@ function updateModel()
 
 function getFinalModelData()
 {
-	let i, s;
+	let i, j, s, group, min, max;
 	
 	s = "";
 	s += (_model.flatShaded ? 1 : 0) + "  ";
@@ -478,11 +531,54 @@ function getFinalModelData()
 	
 	for (i=0; i<_model.faces.length; i++)
 	{
-		s += _model.faces[i].p1 + " " + _model.faces[i].p2 + " " + _model.faces[i].p3 + " "+ _model.faces[i].p4 + " ";
+		s += _model.faces[i].p1 + " " + _model.faces[i].p2 + " " + _model.faces[i].p3 + " " + _model.faces[i].p4 + " ";
+	}
+	s = s.trim();
+	
+	s += "  ";
+	
+	for (i=0; i<_model.groups.length; i++)
+	{
+		group = _model.groups[i];
+		
+		min = 999999;
+		max = -1;
+		
+		for (j=0; j<_model.faces.length; j++)
+		{
+			if (_model.faces[j].groupIndex == i)
+			{
+				min = Math.min(min, j);
+				max = Math.max(max, j);
+			}
+		}
+		
+		// if no faces use this group
+		if (max == -1)
+		{
+			// discard it
+			continue;
+		}
+		
+		s += group.materialIndex + " ";
+		s += min + " ";
+		s += max + " ";
+		s += group.cloneCount + " ";
+		s += group.clonePadX + " ";
+		s += group.clonePadY + " ";
+		s += group.clonePadZ + " ";
+		s += group.cloneRotateX + " ";
+		s += group.cloneRotateY + " ";
+		s += group.cloneRotateZ + " ";
 	}
 	s = s.trim();
 	
 	return s;
+}
+
+function groupAdd()
+{
+	_model.groups.push(new EGroup(0));
 }
 
 function parseFinalModelData(s)
@@ -570,6 +666,22 @@ function updateSidebar()
 		obj.appendChild(tmp);
 	}
 	
+	obj = document.getElementById("groups");
+	
+	obj.innerHTML = "";
+	
+	for (i=0; i<_model.groups.length; i++)
+	{
+		tmp = document.createElement("a");
+		tmp.dataset.pointIndex = i;
+		tmp.href = "#";
+		tmp.id = "group-" + i;
+		tmp.onclick = selectGroup;
+		tmp.innerHTML = i;
+		
+		obj.appendChild(tmp);
+	}
+	
 	
 	s = getFinalModelData();
 	
@@ -610,6 +722,7 @@ function unselectAll()
 {
 	unselectPoint();
 	unselectFace();
+	unselectGroup();
 }
 
 function updateCurrentPoint()
@@ -754,9 +867,29 @@ function updateCurrentFace()
 
 function selectFace(event)
 {
+	let a;
+	
+	a = _model.faces[event.target.dataset.pointIndex];
+	
+	if (_groupRedefinitionStep == 1)
+	{
+		if (a.groupIndex == 1)
+		{
+			a.groupIndex = _currentGroupIndex;
+		}
+		else
+		{
+			a.groupIndex = 1;
+		}
+		
+		// updateModel();
+		
+		return;
+	}
+	
 	unselectAll();
 	
-	_currentFace = _model.faces[event.target.dataset.pointIndex];
+	_currentFace = a;
 	
 	_currentFaceA = event.target;
 	
@@ -802,6 +935,88 @@ function addFace()
 
 function deleteCurrentFace()
 {
+}
+
+function editGroupFaces()
+{
+	unselectPoint();
+	unselectFace();
+	
+	_groupRedefinitionStep = 1;
+	setStatus("Select faces to add/remove.");
+}
+
+function finishGroupFaces()
+{
+	_groupRedefinitionStep = 0;
+	updateModel();
+	setStatus("Ready.");
+}
+
+function updateCurrentGroup()
+{
+	let a;
+	
+	if (_currentGroupIndex == -1)
+	{
+		return;
+	}
+	
+	a = _model.groups[_currentGroupIndex];
+	
+	a.materialIndex = document.getElementById("group_edit_material").value * 1;
+	a.cloneCount = document.getElementById("group_edit_count").value * 1;
+	a.clonePadX = document.getElementById("group_edit_px").value * 1;
+	a.clonePadY = document.getElementById("group_edit_py").value * 1;
+	a.clonePadZ = document.getElementById("group_edit_pz").value * 1;
+	a.cloneRotateX = document.getElementById("group_edit_rx").value * 1;
+	a.cloneRotateY = document.getElementById("group_edit_ry").value * 1;
+	a.cloneRotateZ = document.getElementById("group_edit_rz").value * 1;
+	
+	updateModel();
+}
+
+function unselectGroup()
+{
+	_currentGroupIndex = -1;
+	
+	document.getElementById("group_edit_material").value = "-";
+	document.getElementById("group_edit_count").value = "-";
+	document.getElementById("group_edit_px").value = "-";
+	document.getElementById("group_edit_py").value = "-";
+	document.getElementById("group_edit_pz").value = "-";
+	document.getElementById("group_edit_rx").value = "-";
+	document.getElementById("group_edit_ry").value = "-";
+	document.getElementById("group_edit_rz").value = "-";
+}
+
+function selectGroup(event)
+{
+	let a;
+	
+	unselectAll();
+	
+	if (_currentGroupA)
+	{
+		_currentGroupA.className = "";
+	}
+	
+	_currentGroupIndex = event.target.dataset.pointIndex;
+	_currentGroupA = event.target;
+	_currentGroupA.className = "selected";
+	
+	a = _model.groups[_currentGroupIndex];
+	
+	document.getElementById("group_edit_material").value = a.materialIndex;
+	document.getElementById("group_edit_count").value = a.cloneCount;
+	document.getElementById("group_edit_px").value  = a.clonePadX;
+	document.getElementById("group_edit_py").value  = a.clonePadY;
+	document.getElementById("group_edit_pz").value  = a.clonePadZ;
+	document.getElementById("group_edit_rx").value  = a.cloneRotateX;
+	document.getElementById("group_edit_ry").value  = a.cloneRotateY;
+	document.getElementById("group_edit_rz").value  = a.cloneRotateZ;
+	
+	updateSelectionPoints();
 }
 
 function setStatus(s)
@@ -873,6 +1088,8 @@ function clearModel()
 	
 	_model.faces.push(new EFace(0, 1, 2, 3));
 	
+	_model.groups.push(new EGroup(0));
+	
 	updateModel();
 }
 
@@ -887,6 +1104,8 @@ function init()
 {
 	_lastFrameRenderTime = 0;
 	_faceRedefinitionStep = 0;
+	_groupRedefinitionStep = 0;
+	_currentGroupIndex = -1;
 	_selectionSpheres = [];
 	_pointSpheres = [];
 	
@@ -903,6 +1122,15 @@ function init()
 	registerInputEvents(document.getElementById("point_edit_y"));
 	registerInputEvents(document.getElementById("point_edit_z"));
 	registerInputEvents(document.getElementById("scale_edit"));
+	
+	registerInputEvents(document.getElementById("group_edit_material"));
+	registerInputEvents(document.getElementById("group_edit_count"));
+	registerInputEvents(document.getElementById("group_edit_px"));
+	registerInputEvents(document.getElementById("group_edit_py"));
+	registerInputEvents(document.getElementById("group_edit_pz"));
+	registerInputEvents(document.getElementById("group_edit_rx"));
+	registerInputEvents(document.getElementById("group_edit_ry"));
+	registerInputEvents(document.getElementById("group_edit_rz"));
 	
 	_engine.runRenderLoop(onRenderLoop);
 	window.addEventListener("resize", onResize);

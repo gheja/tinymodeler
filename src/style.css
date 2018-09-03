@@ -137,6 +137,17 @@ a:hover
 	color: #000;
 }
 
+#groups a
+{
+	color: #fff;
+}
+
+#groups a.selected
+{
+	background: #fff;
+	color: #000;
+}
+
 #data
 {
 	background: #222;
