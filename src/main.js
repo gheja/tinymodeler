@@ -1,5 +1,37 @@
 "use strict";
 
+class EPoint
+{
+	constructor(x, y, z)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+}
+
+class EFace
+{
+	constructor(p1, p2, p3, p4)
+	{
+		this.p1 = p1;
+		this.p2 = p2;
+		this.p3 = p3;
+		this.p4 = p4;
+	}
+}
+
+class EMaterial
+{
+	constructor(r, g, b, a)
+	{
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+	}
+}
+
 let _lastFrameRenderTime;
 let _canvas;
 let _engine;
@@ -474,21 +506,21 @@ function convertFinalModelToEditable()
 	
 	for (i=0; i<_finalModel.points.length; i+=3)
 	{
-		_model.points.push({
-			x: _finalModel.points[i] * 1,
-			y: _finalModel.points[i + 1] * 1,
-			z: _finalModel.points[i + 2] * 1
-		});
+		_model.points.push(new EPoint(
+			_finalModel.points[i] * 1,
+			_finalModel.points[i + 1] * 1,
+			_finalModel.points[i + 2] * 1
+		));
 	}
 	
 	for (i=0; i<_finalModel.faces.length; i+=4)
 	{
-		_model.faces.push({
-			p1: _finalModel.faces[i] * 1,
-			p2: _finalModel.faces[i + 1] * 1,
-			p3: _finalModel.faces[i + 2] * 1,
-			p4: _finalModel.faces[i + 3] * 1
-		});
+		_model.faces.push(new EFace(
+			_finalModel.faces[i] * 1,
+			_finalModel.faces[i + 1] * 1,
+			_finalModel.faces[i + 2] * 1,
+			_finalModel.faces[i + 3] * 1
+		));
 	}
 }
 
@@ -700,11 +732,11 @@ function addPoint()
 {
 	if (_currentPoint)
 	{
-		_model.points.push({ x: _currentPoint.x, y: _currentPoint.y, z: _currentPoint.z });
+		_model.points.push(new EPoint(_currentPoint.x, _currentPoint.y, _currentPoint.z));
 	}
 	else
 	{
-		_model.points.push({ x: 0, y: 0, z: 0 });
+		_model.points.push(new EPoint(0, 0, 0));
 	}
 	
 	updateSidebar();
@@ -757,7 +789,7 @@ function redefineFaceCancel()
 
 function addFace()
 {
-	_model.faces.push({ p1: null, p2: null, p3: null, p4: null });
+	_model.faces.push(new EFace(null, null, null, null));
 	updateSidebar();
 	
 	// select last element
@@ -831,12 +863,12 @@ function clearModel()
 {
 	_model = _copy(_modelDefaults);
 	
-	_model.points.push({ x: 0, y: 0, z: 0 });
-	_model.points.push({ x: 10, y: 0, z: 0 });
-	_model.points.push({ x: 10, y: 10, z: 0 });
-	_model.points.push({ x: 0, y: 10, z: 0 });
+	_model.points.push(new EPoint(0, 0, 0));
+	_model.points.push(new EPoint(10, 0, 0));
+	_model.points.push(new EPoint(10, 10, 0));
+	_model.points.push(new EPoint(0, 10, 0));
 	
-	_model.faces.push({ p1: 0, p2: 1, p3: 2, p4: 3 });
+	_model.faces.push(new EFace(0, 1, 2, 3));
 	
 	updateModel();
 }
