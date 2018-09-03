@@ -64,6 +64,9 @@ let _modelDefaults = {
 	flatShaded: false
 };
 
+let _materials = [
+];
+
 // the one to be processed by bjs
 let _finalModel;
 
@@ -890,6 +893,11 @@ function init()
 	_canvas = document.getElementById("renderCanvas")
 	_engine = new BABYLON.Engine(_canvas, true, { preserveDrawingBuffer: true, stencil: true });
 	_scene = createScene();
+	
+	_materials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, _scene));
+	_materials.push(quickMaterial(1.0, 0, 0, 1.0, _scene));
+	_materials.push(quickMaterial(0, 1.0, 0, 1.0, _scene));
+	_materials.push(quickMaterial(0, 0, 1.0, 1.0, _scene));
 	
 	registerInputEvents(document.getElementById("point_edit_x"));
 	registerInputEvents(document.getElementById("point_edit_y"));
