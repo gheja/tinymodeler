@@ -263,7 +263,7 @@ function onWheel(event)
 	
 	event.target.value = clamp(0, 100, Math.round(event.target.value * 1) + change);
 	
-	updateModel();
+	onChange(event);
 }
 
 function onClick(event)
