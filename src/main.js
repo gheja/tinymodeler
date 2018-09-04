@@ -337,7 +337,7 @@ function updateScale()
 
 function updateMesh()
 {
-	let positions, indices, normals, vertexData, i;
+	let positions, indices, normals, vertexData, multimaterial, i;
 	
 	positions = [];
 	indices = [];
@@ -371,6 +371,13 @@ function updateMesh()
 	if (_finalModel.flatShaded)
 	{
 		_mesh.convertToFlatShadedMesh();
+	}
+	
+	_mesh.subMeshes = [];
+	
+	for (i=0; i<_finalModel.groups.length; i += 10)
+	{
+		 _mesh.subMeshes.push(new BABYLON.SubMesh(_finalModel.groups[i] * 1, 0, _finalModel.points.length, _finalModel.groups[i + 1] * 1 * 6, (_finalModel.groups[i + 2] * 1 - _finalModel.groups[i + 1] * 1 + 1) * 6, _mesh));
 	}
 }
 
