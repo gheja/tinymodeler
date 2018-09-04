@@ -591,7 +591,8 @@ function parseFinalModelData(s)
 		flatShaded: a[0] * 1,
 		scale: a[1],
 		points: a[2].split(" "),
-		faces: a[3].split(" ")
+		faces: a[3].split(" "),
+		groups: a[4].split(" ")
 	};
 }
 
