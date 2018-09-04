@@ -405,7 +405,7 @@ function updateMesh()
 	}
 }
 
-function updateSelectionPoints()
+function updateSelections()
 {
 	let a, i;
 	
@@ -539,7 +539,6 @@ function updateModel()
 {
 	updateScale();
 	updateCurrentPoint();
-	updateSelectionPoints();
 	updateGroups();
 	
 	convertEditableModelToFinal();
@@ -725,6 +724,8 @@ function updateSidebar()
 	
 	obj = document.getElementById("data").value = s;
 	obj = document.getElementById("data_size").innerHTML = s.length + " characters";
+	
+	updateSelections();
 }
 
 function unselectPoint()
@@ -740,7 +741,7 @@ function unselectPoint()
 	document.getElementById("point_edit_y").value = "-";
 	document.getElementById("point_edit_z").value = "-";
 	
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function unselectFace()
@@ -753,7 +754,7 @@ function unselectFace()
 	_currentFaceA = null;
 	_currentFace = null;
 	
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function unselectAll()
@@ -834,7 +835,7 @@ function selectPoint(event)
 	
 	setStatus("Point selected for edit.");
 	
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function selectPointByIndex(index)
@@ -851,7 +852,7 @@ function selectPointByIndex(index)
 	
 	setStatus("Point selected for edit.");
 	
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function moveSelectionSphere(i, point)
@@ -873,13 +874,15 @@ function highlightPoint(event)
 {
 	
 	_hoveredPoint = _model.points[event.target.dataset.pointIndex];
-	updateSelectionPoints();
+	
+	updateSelections();
 }
 
 function unhighlightPoint(event)
 {
 	_hoveredPoint = null;
-	updateSelectionPoints();
+	
+	updateSelections();
 }
 
 function addPoint()
@@ -920,7 +923,7 @@ function selectFace(event)
 			a.groupIndex = 1;
 		}
 		
-		// updateModel();
+		updateModel();
 		
 		return;
 	}
@@ -932,7 +935,7 @@ function selectFace(event)
 	_currentFaceA = event.target;
 	
 	selectCurrentFacePoints();
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function selectFaceByIndex(index)
@@ -944,7 +947,7 @@ function selectFaceByIndex(index)
 	_currentFaceA = document.getElementById("face-" + index);
 	
 	selectCurrentFacePoints();
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function redefineFace()
@@ -1054,7 +1057,7 @@ function selectGroup(event)
 	document.getElementById("group_edit_ry").value  = a.cloneRotateY;
 	document.getElementById("group_edit_rz").value  = a.cloneRotateZ;
 	
-	updateSelectionPoints();
+	updateSelections();
 }
 
 function setStatus(s)
