@@ -445,13 +445,21 @@ function updateSelections()
 	
 	a = document.getElementById("faces").getElementsByTagName("a");
 	
-	for (i=0; i<a; i++)
+	for (i=0; i<a.length; i++)
 	{
 		a[i].className = "";
+		
+		if (_currentGroupIndex != -1)
+		{
+			if (_model.faces[a[i].dataset.faceIndex].groupIndex == _currentGroupIndex)
+			{
+				a[i].className = "selected";
+			}
+		}
 	}
 	a = document.getElementById("groups").getElementsByTagName("a");
 	
-	for (i=0; i<a; i++)
+	for (i=0; i<a.length; i++)
 	{
 		a[i].className = "";
 	}
