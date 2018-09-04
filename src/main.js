@@ -538,11 +538,6 @@ function updateGroups()
 	}
 }
 
-function reorderFaces()
-{
-	_model.faces.sort(function(a, b) { return b.groupIndex - a.groupIndex });
-}
-
 function updateModel()
 {
 	updateScale();
@@ -559,7 +554,11 @@ function updateModel()
 
 function getFinalModelData()
 {
-	let i, j, s, group, min, max;
+	let i, j, s, group, min, max, faces;
+	
+	faces = _copy(_model.faces);
+	
+	faces.sort(function(a, b) { return b.groupIndex - a.groupIndex });
 	
 	s = "";
 	s += (_model.flatShaded ? 1 : 0) + "  ";
@@ -573,9 +572,9 @@ function getFinalModelData()
 	
 	s += "  ";
 	
-	for (i=0; i<_model.faces.length; i++)
+	for (i=0; i<faces.length; i++)
 	{
-		s += _model.faces[i].p1 + " " + _model.faces[i].p2 + " " + _model.faces[i].p3 + " " + _model.faces[i].p4 + " ";
+		s += faces[i].p1 + " " + faces[i].p2 + " " + faces[i].p3 + " " + faces[i].p4 + " ";
 	}
 	s = s.trim();
 	
@@ -588,9 +587,9 @@ function getFinalModelData()
 		min = 999999;
 		max = -1;
 		
-		for (j=0; j<_model.faces.length; j++)
+		for (j=0; j<faces.length; j++)
 		{
-			if (_model.faces[j].groupIndex == i)
+			if (faces[j].groupIndex == i)
 			{
 				min = Math.min(min, j);
 				max = Math.max(max, j);
