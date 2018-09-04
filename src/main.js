@@ -401,7 +401,7 @@ function updateMesh()
 	
 	for (i=0; i<_finalModel.groups.length; i += 10)
 	{
-		 _mesh.subMeshes.push(new BABYLON.SubMesh(_finalModel.groups[i] * 1, 0, _finalModel.points.length, _finalModel.groups[i + 1] * 1 * 6, (_finalModel.groups[i + 2] * 1 - _finalModel.groups[i + 1] * 1 + 1) * 6, _mesh));
+		 _mesh.subMeshes.push(new BABYLON.SubMesh(_finalModel.groups[i] * 1, 0, _finalModel.points.length, _finalModel.groups[i + 1] * 1 * 6, (_finalModel.groups[i + 2] * 1) * 6, _mesh));
 	}
 }
 
@@ -605,7 +605,7 @@ function getFinalModelData()
 		
 		s += group.materialIndex + " ";
 		s += min + " ";
-		s += max + " ";
+		s += (max - min + 1) + " ";
 		s += group.cloneCount + " ";
 		s += group.clonePadX + " ";
 		s += group.clonePadY + " ";
