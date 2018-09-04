@@ -702,7 +702,7 @@ function updateSidebar()
 	for (i=0; i<_model.faces.length; i++)
 	{
 		tmp = document.createElement("a");
-		tmp.dataset.pointIndex = i;
+		tmp.dataset.faceIndex = i;
 		tmp.href = "#";
 		tmp.id = "face-" + i;
 		tmp.onclick = selectFace;
@@ -718,7 +718,7 @@ function updateSidebar()
 	for (i=0; i<_model.groups.length; i++)
 	{
 		tmp = document.createElement("a");
-		tmp.dataset.pointIndex = i;
+		tmp.dataset.groupIndex = i;
 		tmp.href = "#";
 		tmp.id = "group-" + i;
 		tmp.onclick = selectGroup;
@@ -918,7 +918,7 @@ function selectFace(event)
 {
 	let a;
 	
-	a = _model.faces[event.target.dataset.pointIndex];
+	a = _model.faces[event.target.dataset.faceIndex];
 	
 	if (_groupRedefinitionStep == 1)
 	{
@@ -1050,7 +1050,7 @@ function selectGroup(event)
 		_currentGroupA.className = "";
 	}
 	
-	_currentGroupIndex = event.target.dataset.pointIndex;
+	_currentGroupIndex = event.target.dataset.groupIndex;
 	_currentGroupA = event.target;
 	_currentGroupA.className = "selected";
 	
