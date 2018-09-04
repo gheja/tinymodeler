@@ -330,6 +330,30 @@ function onChange(event)
 	updateModel();
 }
 
+function onKeyDown(event)
+{
+	let change;
+	
+	if (event.code == "ArrowDown")
+	{
+		change = -1;
+	}
+	else if (event.code == "ArrowUp")
+	{
+		change = +1;
+	}
+	else
+	{
+		return;
+	}
+	
+	event.target.value = clamp(0, 100, Math.round(event.target.value * 1) + change);
+	event.preventDefault();
+	event.stopPropagation();
+	
+	onChange(event);
+}
+
 function updateScale()
 {
 	_model.scale = document.getElementById("scale_edit").value * 1;
@@ -1111,6 +1135,7 @@ function registerInputEvents(obj)
 {
 	obj.addEventListener("change", onChange);
 	obj.addEventListener("keyup", onChange);
+	obj.addEventListener("keydown", onKeyDown);
 	obj.addEventListener("wheel", onWheel);
 }
 
