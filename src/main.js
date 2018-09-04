@@ -162,8 +162,14 @@ function createScene()
 	
 	_camera.attachControl(_canvas);
 	
+	material = new BABYLON.MultiMaterial("", scene);
+	material.subMaterials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, _scene));
+	material.subMaterials.push(quickMaterial(1.0, 0, 0, 1.0, _scene));
+	material.subMaterials.push(quickMaterial(0, 1.0, 0, 1.0, _scene));
+	material.subMaterials.push(quickMaterial(0, 0, 1.0, 1.0, _scene));
+	
 	_mesh = new BABYLON.Mesh("custom", scene);
-	_mesh.material = quickMaterial(0.5, 0.5, 0.5, 1, scene);
+	_mesh.material = material;
 	_mesh.isPickable = false;
 	
 	shadowGenerator1 = new BABYLON.ShadowGenerator(1024, light1);
@@ -1113,11 +1119,6 @@ function init()
 	_canvas = document.getElementById("renderCanvas")
 	_engine = new BABYLON.Engine(_canvas, true, { preserveDrawingBuffer: true, stencil: true });
 	_scene = createScene();
-	
-	_materials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, _scene));
-	_materials.push(quickMaterial(1.0, 0, 0, 1.0, _scene));
-	_materials.push(quickMaterial(0, 1.0, 0, 1.0, _scene));
-	_materials.push(quickMaterial(0, 0, 1.0, 1.0, _scene));
 	
 	registerInputEvents(document.getElementById("point_edit_x"));
 	registerInputEvents(document.getElementById("point_edit_y"));
