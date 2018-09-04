@@ -163,10 +163,10 @@ function createScene()
 	_camera.attachControl(_canvas);
 	
 	material = new BABYLON.MultiMaterial("", scene);
-	material.subMaterials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, _scene));
-	material.subMaterials.push(quickMaterial(1.0, 0, 0, 1.0, _scene));
-	material.subMaterials.push(quickMaterial(0, 1.0, 0, 1.0, _scene));
-	material.subMaterials.push(quickMaterial(0, 0, 1.0, 1.0, _scene));
+	material.subMaterials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, scene));
+	material.subMaterials.push(quickMaterial(1.0, 0, 0, 1.0, scene));
+	material.subMaterials.push(quickMaterial(0, 1.0, 0, 1.0, scene));
+	material.subMaterials.push(quickMaterial(0, 0, 1.0, 1.0, scene));
 	
 	_mesh = new BABYLON.Mesh("custom", scene);
 	_mesh.material = material;
