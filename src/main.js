@@ -788,15 +788,11 @@ function selectCurrentFacePoints()
 	// _currentFace.p1 = obj.dataset.pointId;
 }
 
-function selectPoint(event)
+function selectPointByIndex(index)
 {
-	let obj;
-	
-	obj = event.target;
-	
 	if (_faceRedefinitionStep == 1)
 	{
-		_currentFace.p1 = obj.dataset.pointIndex;
+		_currentFace.p1 = index;
 		selectCurrentFacePoints();
 		_faceRedefinitionStep = 2;
 		setStatus("Select second point.");
@@ -804,7 +800,7 @@ function selectPoint(event)
 	}
 	else if (_faceRedefinitionStep == 2)
 	{
-		_currentFace.p2 = obj.dataset.pointIndex;
+		_currentFace.p2 = index;
 		selectCurrentFacePoints();
 		_faceRedefinitionStep = 3;
 		setStatus("Select third point.");
@@ -812,7 +808,7 @@ function selectPoint(event)
 	}
 	else if (_faceRedefinitionStep == 3)
 	{
-		_currentFace.p3 = obj.dataset.pointIndex;
+		_currentFace.p3 = index;
 		selectCurrentFacePoints();
 		_faceRedefinitionStep = 4;
 		setStatus("Select fourth point.");
@@ -820,7 +816,7 @@ function selectPoint(event)
 	}
 	else if (_faceRedefinitionStep == 4)
 	{
-		_currentFace.p4 = obj.dataset.pointIndex;
+		_currentFace.p4 = index;
 		selectCurrentFacePoints();
 		updateCurrentFace();
 		updateModel();
@@ -830,23 +826,6 @@ function selectPoint(event)
 		return;
 	}
 	
-	unselectAll();
-	
-	_currentPoint = _model.points[obj.dataset.pointIndex];
-	
-	_currentPointA = obj;
-	
-	document.getElementById("point_edit_x").value = _currentPoint.x;
-	document.getElementById("point_edit_y").value = _currentPoint.y;
-	document.getElementById("point_edit_z").value = _currentPoint.z;
-	
-	setStatus("Point selected for edit.");
-	
-	updateSelections();
-}
-
-function selectPointByIndex(index)
-{
 	unselectAll();
 	
 	_currentPoint = _model.points[index];
@@ -860,6 +839,11 @@ function selectPointByIndex(index)
 	setStatus("Point selected for edit.");
 	
 	updateSelections();
+}
+
+function selectPoint(event)
+{
+	seletPointByIndex(event.target.dataset.pointIndex);
 }
 
 function moveSelectionSphere(i, point)
