@@ -651,6 +651,7 @@ function getFinalModelData()
 function addGroup()
 {
 	_model.groups.push(new EGroup(0));
+	updateSidebar();
 }
 
 function parseFinalModelData(s)
