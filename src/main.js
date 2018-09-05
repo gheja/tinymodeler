@@ -71,6 +71,7 @@ let _faceRedefinitionStep;
 let _groupRedefinitionStep;
 
 let _mesh;
+let _cloneMeshes = [];
 
 let _selectionSpheres;
 let _pointSphereBase;
@@ -86,8 +87,7 @@ let _modelDefaults = {
 	flatShaded: false
 };
 
-let _materials = [
-];
+let _materials = [];
 
 // the one to be processed by bjs
 let _finalModel;
@@ -140,7 +140,7 @@ function quickMaterial(r, g, b, a, scene)
 function createScene()
 {
 	// Create scene
-	let scene, plane, material, light1, light2, shadowGenerator1, shadowGenerator2;
+	let scene, plane, light1, light2, shadowGenerator1, shadowGenerator2;
 	
 	scene = new BABYLON.Scene(_engine);
 	
@@ -162,20 +162,14 @@ function createScene()
 	
 	_camera.attachControl(_canvas);
 	
-	material = new BABYLON.MultiMaterial("", scene);
-	material.subMaterials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, scene));
-	material.subMaterials.push(quickMaterial(1.0, 0, 0, 1.0, scene));
-	material.subMaterials.push(quickMaterial(0, 1.0, 0, 1.0, scene));
-	material.subMaterials.push(quickMaterial(0, 0, 1.0, 1.0, scene));
-	
-	_mesh = new BABYLON.Mesh("custom", scene);
-	_mesh.material = material;
-	_mesh.isPickable = false;
+	_materials.push(quickMaterial(0.5, 0.5, 0.5, 1.0, scene));
+	_materials.push(quickMaterial(1.0, 0, 0, 1.0, scene));
+	_materials.push(quickMaterial(0, 1.0, 0, 1.0, scene));
+	_materials.push(quickMaterial(0, 0, 1.0, 1.0, scene));
 	
 	shadowGenerator1 = new BABYLON.ShadowGenerator(1024, light1);
 	shadowGenerator1.useBlurExponentialShadowMap = true;
 	shadowGenerator1.blurKernel = 32;
-	shadowGenerator1.addShadowCaster(_mesh, true);
 	
 	plane = BABYLON.Mesh.CreatePlane("ground", 150, scene);
 	plane.rotation.x = Math.PI / 2;
@@ -359,9 +353,32 @@ function updateScale()
 	_model.scale = document.getElementById("scale_edit").value * 1;
 }
 
+function disposeMesh()
+{
+	let i;
+	
+	if (_mesh)
+	{
+		_mesh.dispose();
+	}
+	
+	for (i=0; i<_cloneMeshes.length; i++)
+	{
+		_cloneMeshes[i].dispose();
+	}
+	
+	_cloneMeshes.length = 0;
+}
+
 function updateMesh()
 {
-	let positions, indices, normals, vertexData, multimaterial, i;
+	let positions, indices, normals, vertexData, i, j, k, a, b;
+	
+	// only in editor
+	disposeMesh();
+	
+	_mesh = new BABYLON.Mesh("custom", _scene);
+	_mesh.isPickable = false;
 	
 	positions = [];
 	indices = [];
@@ -385,23 +402,35 @@ function updateMesh()
 	
 	BABYLON.VertexData.ComputeNormals(positions, indices, normals);
 	
-	vertexData = new BABYLON.VertexData();
-	vertexData.positions = positions;
-	vertexData.indices = indices;
-	vertexData.normals = normals;
-	
-	vertexData.applyToMesh(_mesh);
-	
-	if (_finalModel.flatShaded)
-	{
-		_mesh.convertToFlatShadedMesh();
-	}
-	
-	_mesh.subMeshes = [];
-	
 	for (i=0; i<_finalModel.groups.length; i += 10)
 	{
-		 _mesh.subMeshes.push(new BABYLON.SubMesh(_finalModel.groups[i] * 1, 0, _finalModel.points.length, _finalModel.groups[i + 1] * 1 * 6, (_finalModel.groups[i + 2] * 1) * 6, _mesh));
+		for (j=0; j<_finalModel.groups[i + 3] * 1 + 1; j++)
+		{
+			a = new BABYLON.Mesh("custom", _scene);
+			a.material = _materials[_finalModel.groups[i]];
+			a.parent = _mesh;
+			
+			b = new BABYLON.VertexData();
+			b.positions = _copy(positions);
+			b.indices = indices.slice(_finalModel.groups[i + 1] * 1 * 6, (_finalModel.groups[i + 1] * 1 + _finalModel.groups[i + 2] * 1) * 6);
+			b.normals = _copy(normals);
+			
+			for (k=0; k<b.positions.length; k+=3)
+			{
+				b.positions[k] += _finalModel.groups[i + 4] * 1 * j;
+				b.positions[k] += _finalModel.groups[i + 5] * 1 * j;
+				b.positions[k] += _finalModel.groups[i + 6] * 1 * j;
+			}
+			
+			b.applyToMesh(a);
+			
+			if (_finalModel.flatShaded)
+			{
+				a.convertToFlatShadedMesh();
+			}
+			
+			_cloneMeshes.push(a);
+		}
 	}
 }
 
