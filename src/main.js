@@ -619,7 +619,7 @@ function getFinalModelData()
 	return s;
 }
 
-function groupAdd()
+function addGroup()
 {
 	_model.groups.push(new EGroup(0));
 }
