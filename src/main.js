@@ -893,7 +893,7 @@ function selectPointByIndex(index)
 
 function selectPoint(event)
 {
-	seletPointByIndex(event.target.dataset.pointIndex);
+	selectPointByIndex(event.target.dataset.pointIndex);
 }
 
 function moveSelectionSphere(i, point)
