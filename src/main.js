@@ -671,7 +671,7 @@ function parseFinalModelData(s)
 
 function convertFinalModelToEditable()
 {
-	let a, b, i;
+	let a, b, i, j;
 	
 	_model = _copy(_modelDefaults);
 	_model.flatShaded = _finalModel.flatShaded * 1;
@@ -694,6 +694,26 @@ function convertFinalModelToEditable()
 			_finalModel.faces[i + 2] * 1,
 			_finalModel.faces[i + 3] * 1
 		));
+	}
+	
+	for (i=0; i<_finalModel.groups.length; i+=10)
+	{
+		a = new EGroup(_finalModel.groups[i]);
+		
+		a.cloneCount = _finalModel.groups[i + 3];
+		a.clonePadX = _finalModel.groups[i + 4];
+		a.clonePadY = _finalModel.groups[i + 5];
+		a.clonePadZ = _finalModel.groups[i + 6];
+		a.cloneRotateX = _finalModel.groups[i + 7];
+		a.cloneRotateY = _finalModel.groups[i + 8];
+		a.cloneRotateZ = _finalModel.groups[i + 9];
+		
+		for (j=0; j<_finalModel.groups[i + 2] * 1; j++)
+		{
+			_model.faces[_finalModel.groups[i + 1] * 1 + j].groupIndex = _model.groups.length;
+		}
+		
+		_model.groups.push(a);
 	}
 }
 
