@@ -81,6 +81,9 @@ let _model;
 
 let _modelDefaults = {
 	scale: 10,
+	centerX: 50,
+	centerY: 50,
+	centerZ: 50,
 	points: [],
 	faces: [],
 	groups: [],
@@ -202,6 +205,10 @@ function createScene()
 	_selectionSpheres[5].material = quickMaterial(0.0, 1.0, 0.0, 0.7, scene);
 	_selectionSpheres[5].isPickable = false;
 	
+	_selectionSpheres[6] = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 0.9 }, scene);
+	_selectionSpheres[6].material = quickMaterial(1.0, 0.0, 0.0, 1.0, scene);
+	_selectionSpheres[6].isPickable = false;
+	
 	_pointSphereBase = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1.1 }, scene);
 	_pointSphereBase.material = quickMaterial(0.5, 0.5, 0.5, 0.7, scene);
 	_pointSphereBase.setEnabled(false);
@@ -319,6 +326,7 @@ function onMouseMove(event)
 
 function onChange(event)
 {
+	updateCenter();
 	updateCurrentPoint();
 	updateCurrentGroup();
 	updateModel();
@@ -552,6 +560,9 @@ function updateSelections()
 		_pointSpheres[i].position.y = _model.points[i].y;
 		_pointSpheres[i].position.z = _model.points[i].z - 50;
 	}
+	
+	// center
+	moveSelectionSphere(6, { x: _model.centerX, y: _model.centerY, z: _model.centerZ });
 }
 
 function updateGroups()
@@ -592,6 +603,9 @@ function getFinalModelData()
 	s = "";
 	s += (_model.flatShaded ? 1 : 0) + "  ";
 	s += _model.scale + "  ";
+	s += _model.centerX + "  ";
+	s += _model.centerY + "  ";
+	s += _model.centerZ + "  ";
 	
 	for (i=0; i<_model.points.length; i++)
 	{
@@ -663,9 +677,10 @@ function parseFinalModelData(s)
 	return {
 		flatShaded: a[0] * 1,
 		scale: a[1],
-		points: a[2].split(" "),
-		faces: a[3].split(" "),
-		groups: a[4].split(" ")
+		center: [ a[2], a[3], a[4] ],
+		points: a[5].split(" "),
+		faces: a[6].split(" "),
+		groups: a[7].split(" ")
 	};
 }
 
@@ -676,6 +691,9 @@ function convertFinalModelToEditable()
 	_model = _copy(_modelDefaults);
 	_model.flatShaded = _finalModel.flatShaded * 1;
 	_model.scale = _finalModel.scale * 1;
+	_model.centerX = _finalModel.center[0] * 1;
+	_model.centerY = _finalModel.center[1] * 1;
+	_model.centerZ = _finalModel.center[2] * 1;
 	
 	for (i=0; i<_finalModel.points.length; i+=3)
 	{
@@ -782,6 +800,11 @@ function updateSidebar()
 	obj = document.getElementById("data").value = s;
 	obj = document.getElementById("data_size").innerHTML = s.length + " characters";
 	
+	document.getElementById("scale_edit").value = _model.scale;
+	document.getElementById("center_edit_x").value = _model.centerX;
+	document.getElementById("center_edit_y").value = _model.centerY;
+	document.getElementById("center_edit_z").value = _model.centerZ;
+	
 	updateSelections();
 }
 
@@ -819,6 +842,13 @@ function unselectAll()
 	unselectPoint();
 	unselectFace();
 	unselectGroup();
+}
+
+function updateCenter()
+{
+	_model.centerX = document.getElementById("center_edit_x").value * 1;
+	_model.centerY = document.getElementById("center_edit_y").value * 1;
+	_model.centerZ = document.getElementById("center_edit_z").value * 1;
 }
 
 function updateCurrentPoint()
@@ -1200,6 +1230,9 @@ function init()
 	registerInputEvents(document.getElementById("point_edit_y"));
 	registerInputEvents(document.getElementById("point_edit_z"));
 	registerInputEvents(document.getElementById("scale_edit"));
+	registerInputEvents(document.getElementById("center_edit_x"));
+	registerInputEvents(document.getElementById("center_edit_y"));
+	registerInputEvents(document.getElementById("center_edit_z"));
 	
 	registerInputEvents(document.getElementById("group_edit_material"));
 	registerInputEvents(document.getElementById("group_edit_count"));
