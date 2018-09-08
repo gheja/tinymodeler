@@ -1144,9 +1144,16 @@ function setStatus(s)
 
 function toggleWireframe()
 {
-	_mesh.material.wireframe = !_mesh.material.wireframe;
+	let i, wireframe;
 	
-	if (_mesh.material.wireframe)
+	wireframe = !_materials[0].wireframe;
+	
+	for (i=0; i<_materials.length; i++)
+	{
+		_materials[i].wireframe = wireframe;
+	}
+	
+	if (wireframe)
 	{
 		setStatus("Wireframe display. Ready.");
 	}
