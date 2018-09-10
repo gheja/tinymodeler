@@ -143,7 +143,7 @@ function quickMaterial(r, g, b, a, scene)
 function createScene()
 {
 	// Create scene
-	let scene, plane, light1, light2, shadowGenerator1, shadowGenerator2;
+	let scene, plane, light1, light2, shadowGenerator1, shadowGenerator2, a;
 	
 	scene = new BABYLON.Scene(_engine);
 	
