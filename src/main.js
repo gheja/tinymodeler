@@ -985,13 +985,13 @@ function selectFace(event)
 	
 	if (_groupRedefinitionStep == 1)
 	{
-		if (a.groupIndex == 1)
+		if (a.groupIndex == _currentGroupIndex)
 		{
-			a.groupIndex = _currentGroupIndex;
+			a.groupIndex = 0;
 		}
 		else
 		{
-			a.groupIndex = 1;
+			a.groupIndex = _currentGroupIndex;
 		}
 		
 		updateModel();
