@@ -1220,6 +1220,36 @@ function registerInputEvents(obj)
 	obj.addEventListener("wheel", onWheel);
 }
 
+function rotate90()
+{
+	let i, x, z;
+	
+	for (i=0; i<_model.points.length; i++)
+	{
+		x = _model.points[i].x - 50;
+		z = _model.points[i].z - 50;
+		
+		_model.points[i].x = 50 + z;
+		_model.points[i].z = 50 + -x;
+	}
+	
+	updateModel();
+}
+
+function move(x, y, z)
+{
+	let i;
+	
+	for (i=0; i<_model.points.length; i++)
+	{
+		_model.points[i].x += x;
+		_model.points[i].y += y;
+		_model.points[i].z += z;
+	}
+	
+	updateModel();
+}
+
 function init()
 {
 	_lastFrameRenderTime = 0;
